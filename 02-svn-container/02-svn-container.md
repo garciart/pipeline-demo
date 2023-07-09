@@ -21,7 +21,7 @@ Perform the following tasks from the [Podman Network Demo](/01-podman-network/01
 - [Start Podman](/01-podman-network/01-podman-network.md#start-podman)
 - [Create the Network](/01-podman-network/01-podman-network.md#create-the-network)
 
-You will also need Subversion on the development host. To install it, open a Terminal and enter the following command: "`sudo yum -y install subversion`".
+You will also need Subversion on the development host. To install it, open a Terminal and enter the following command: `sudo yum -y install subversion`.
 
 -----
 
@@ -146,7 +146,7 @@ For this tutorial, you will use the freely available Rocky Linux 8 image as the 
 
 6. Build the image:
 
-    > **NOTE** - Podman uses `/var/tmp` by default to download and build images. If a "`No space left on device`" error appears during the build, you can change the `image_copy_tmp_dir` setting in the `containers.conf` file, usually located in `/usr/share/containers/containers.conf`.
+    > **NOTE** - Podman uses `/var/tmp` by default to download and build images. If a `No space left on device` error appears during the build, you can change the `image_copy_tmp_dir` setting in the `containers.conf` file, usually located in `/usr/share/containers/containers.conf`.
 
     ```
     # Optional; remove final and intermediate images if they exist
@@ -162,7 +162,7 @@ For this tutorial, you will use the freely available Rocky Linux 8 image as the 
     sudo podman images
     ```
 
-    **OUTPUT (other images may also appear):**
+    **Output (other images may also appear):**
 
     ```
     REPOSITORY                    TAG         IMAGE ID      CREATED             SIZE
@@ -189,7 +189,7 @@ For this tutorial, you will use the freely available Rocky Linux 8 image as the 
     sudo podman ps --all
     ```
 
-    **OUTPUT (other nodes may also appear):**
+    **Output (other nodes may also appear):**
 
     ```
     CONTAINER ID  IMAGE                                COMMAND     CREATED             STATUS              PORTS       NAMES
@@ -219,7 +219,7 @@ For this tutorial, you will use the freely available Rocky Linux 8 image as the 
 
     ![SVN Login Dialog](02-svn-login-dialog-box.png "SVN Login Dialog")
 
-4. Enter "`svnuser`" for the username and "`Change.Me.123`" for the password, then click on **Sign In**.
+4. Enter `svnuser` for the username and `Change.Me.123` for the password, then click on **Sign In**.
 
 5. The `demorepo` landing page should appear:
 
@@ -229,7 +229,7 @@ For this tutorial, you will use the freely available Rocky Linux 8 image as the 
 
 ## Checkout the Repository
 
-> **NOTE** - Ensure you have installed Subversion on the development host: "`sudo yum -y install subversion`"
+> **NOTE** - Ensure you have installed Subversion on the development host: `sudo yum -y install subversion`
 
 1. Open a Terminal, if one is not already open.
 
@@ -246,7 +246,7 @@ For this tutorial, you will use the freely available Rocky Linux 8 image as the 
     Password for '<your username>': *************
     ```
 
-4. When prompted for the repository credentials, enter "`svnuser`" for the username and "`Change.Me.123`" for the password:
+4. When prompted for the repository credentials, enter `svnuser` for the username and `Change.Me.123` for the password:
 
     ```
     Authentication realm: <http://192.168.168.10:80> SVN Repository
@@ -254,7 +254,7 @@ For this tutorial, you will use the freely available Rocky Linux 8 image as the 
     Password for 'svnuser': *************
     ```
 
-5. When asked if you would like to store your password unencrypted, enter "`no`":
+5. When asked if you would like to store your password unencrypted, enter `no`:
 
     ```
     -----------------------------------------------------------------------
@@ -274,7 +274,7 @@ For this tutorial, you will use the freely available Rocky Linux 8 image as the 
     Checked out revision 0.
     ```
 
-6. Using an editor of your choice, open your local `.subversion/servers` (e.g., `~/.subversion/servers` or `/home/<your username>/.subversion/servers`) and, in the **`[global]`** section near the bottom of the file, uncomment and set the value of the 'store-plaintext-passwords' option to "`no`":
+6. Using an editor of your choice, open your local `.subversion/servers` (e.g., `~/.subversion/servers` or `/home/<your username>/.subversion/servers`) and, in the **`[global]`** section near the bottom of the file, uncomment and set the value of the 'store-plaintext-passwords' option to `no`:
 
     ```
     [global]
@@ -306,7 +306,7 @@ For this tutorial, you will use the freely available Rocky Linux 8 image as the 
     cd demorepo
     ```
 
-3.  Ensure your local repository is up-to-date with the remote repository. When prompted for the repository password, enter "`Change.Me.123`":
+3.  Ensure your local repository is up-to-date with the remote repository. When prompted for the repository password, enter `Change.Me.123`:
 
     ```
     svn update
@@ -324,7 +324,7 @@ For this tutorial, you will use the freely available Rocky Linux 8 image as the 
     svn add README.md
     ```
 
-    **OUTPUT:**
+    **Output:**
 
     ```
     A         README.md
@@ -332,13 +332,13 @@ For this tutorial, you will use the freely available Rocky Linux 8 image as the 
 
     > **NOTE** - The `A` before the filename indicates that the file will be added to the main repository after you commit. You can always check the status of files in your local repository by entering `svn status`.
 
-6. Push your changes to the remote repository. When prompted for the repository password, enter "`Change.Me.123`":
+6. Push your changes to the remote repository. When prompted for the repository password, enter `Change.Me.123`:
 
     ```
     svn commit -m "Initial commit."
     ```
 
-    **OUTPUT:***
+    **Output:**
 
     ```
     Authentication realm: <http://192.168.168.10:80> SVN Repository
@@ -356,7 +356,7 @@ For this tutorial, you will use the freely available Rocky Linux 8 image as the 
     firefox 192.168.168.10/svn/demorepo
     ```
 
-8. If a popup window appears, asking you to log in, enter "`svnuser`" for the username and "`Change.Me.123`" for the password, then click on **Sign In**.
+8. If a popup window appears, asking you to log in, enter `svnuser` for the username and `Change.Me.123` for the password, then click on **Sign In**.
 
 9. The `demorepo` landing page should appear, with your changes:
 

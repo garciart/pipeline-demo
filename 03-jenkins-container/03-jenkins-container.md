@@ -104,7 +104,7 @@ For this tutorial, you will use the freely available Rocky Linux 8 image as the 
 
 4. Build the image:
 
-    > **NOTE** - Podman uses `/var/tmp` by default to download and build images. If a "`No space left on device`" error appears during the build, you can change the `image_copy_tmp_dir` setting in the `containers.conf` file, usually located in `/usr/share/containers/containers.conf`.
+    > **NOTE** - Podman uses `/var/tmp` by default to download and build images. If a `No space left on device` error appears during the build, you can change the `image_copy_tmp_dir` setting in the `containers.conf` file, usually located in `/usr/share/containers/containers.conf`.
 
     ```
     # Optional; remove final and intermediate images if they exist
@@ -120,7 +120,7 @@ For this tutorial, you will use the freely available Rocky Linux 8 image as the 
     sudo podman images
     ```
 
-    **OUTPUT (other images may also appear):**
+    **Output (other images may also appear):**
 
     ```
     REPOSITORY                    TAG         IMAGE ID      CREATED             SIZE
@@ -147,7 +147,7 @@ For this tutorial, you will use the freely available Rocky Linux 8 image as the 
     sudo podman ps --all
     ```
 
-    **OUTPUT (other nodes may also appear):**
+    **Output (other nodes may also appear):**
 
     ```
     CONTAINER ID  IMAGE                                COMMAND     CREATED             STATUS              PORTS       NAMES
@@ -177,7 +177,7 @@ For this tutorial, you will use the freely available Rocky Linux 8 image as the 
 
     ![Unlock Jenkins](05-jenkins-unlock.png "Unlock Jenkins")
 
-4. In the Terminal, access the Jenkins Server, using SSH as `root`; enter "`Change.Me.321`" when prompted for a password:
+4. In the Terminal, access the Jenkins Server, using SSH as `root`; enter `Change.Me.321` when prompted for a password:
 
     ```
     ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@192.168.168.20
@@ -239,7 +239,7 @@ For this tutorial, you will use the freely available Rocky Linux 8 image as the 
 
     ![Jenkins Plugins Page](13-jenkins-plugins-page.png "Jenkins Plugins Page")
 
-16. Click on **Available Plugins** or navigate to http://192.168.168.20:80808/manage/pluginManager/available. A list of available plugins should appear. Enter "`subversion`" in the search box; the **Subversion** plugin should appear at the top of the list. Check the **Install** box next to the plugin:
+16. Click on **Available Plugins** or navigate to http://192.168.168.20:80808/manage/pluginManager/available. A list of available plugins should appear. Enter `subversion` in the search box; the **Subversion** plugin should appear at the top of the list. Check the **Install** box next to the plugin:
 
     ![Jenkins SVN Plugin Search Results](14-jenkins-svn-plugin-search-results.png "Jenkins SVN Plugin Search Results")
 
@@ -259,42 +259,39 @@ For this tutorial, you will use the freely available Rocky Linux 8 image as the 
 
     ![Jenkins Login Page](18-jenkins-login-page.png "Jenkins Login Page")
 
-21. Enter "`jenkinsuser`" for the username and "`Change.Me.123`" for the password, then click on **Sign In**. If the Download progress page reappears, click on **Go back to the top page** to return to the Dashboard:
+21. Enter `jenkinsuser` for the username and `Change.Me.123` for the password, then click on **Sign In**. If the Download progress page reappears, click on **Go back to the top page** to return to the Dashboard:
 
     ![Jenkins Download Progress Page Blank](19-jenkins-download-progress-page-blank.png "Jenkins Download Progress Page Blank")
 
-22. At the Dashboard, click on **New Item** or navigate to `http://192.168.168.20:8080/view/all/newJob`. The Jenkins New Job page should appear:
+22. At the Dashboard, click on **New Item** or navigate to `http://192.168.168.20:8080/view/all/newJob`. The Jenkins New Job page should appear. Enter `pipeline-demo` as the item name, select **Freestyle project**, and click on **OK**:
 
     > **NOTE** - Ensure the SVN container is up and running first.
 
-    ![Jenkins New Job](20-jenkins-new-job.png "Jenkins New Job")
-23. Enter "`pipeline-demo`" as the item name, select **Freestyle project**, and click on **OK**:
-
     ![Jenkins Demo Job](21-jenkins-demo-job.png "Jenkins Demo Job")
 
-24. The Configuration page should appear:
+23. The Configuration page should appear:
 
     ![Jenkins Job Configuration Page](22-jenkins-job-configuration-page.png "Jenkins Job Configuration Page")
 
-25. Enter "`Pipeline Demo Job`" in the **Description** textbox and select "`Subversion`" for **Source Code Management**.
+24. Enter `Pipeline Demo Job` in the **Description** textbox and select `Subversion` for **Source Code Management**.
 
-26. A new set of options should appear:
+25. A new set of options should appear:
 
-    - Enter "`http://192.168.168.10/svn/demorepo`" for the **Repository URL**.
+    - Enter `http://192.168.168.10/svn/demorepo` for the **Repository URL**.
     - Under **Credentials**, click **Add**, then click on the **Jenkins Credentials Provider** icon.
-    - When the Jenkins Credentials Provider screen appears, enter "`svnuser`" for the username and "`Change.Me.123`" for the password, then click on **Add**.
+    - When the Jenkins Credentials Provider screen appears, enter `svnuser` for the username and `Change.Me.123` for the password, then click on **Add**.
 
        ![Jenkins Credentials Provider](23-jenkins-credentials-provider.png "Jenkins Credentials Provider")
 
     - Select the **svnuser** from the **Credentials** dropdown list.
 
-27. Under **Build Triggers**, select **Poll SCM**. When **Schedule** appears, enter "`H/2 * * * *`" (this will poll the SVN server every two minutes).
+26. Under **Build Triggers**, select **Poll SCM**. When **Schedule** appears, enter `H/2 * * * *` (this will poll the SVN server every two minutes).
 
-28. Click on **Save** when finished. The pipeline-demo job page should appear:
+27. Click on **Save** when finished. The pipeline-demo job page should appear:
 
     ![Jenkins Pipeline Job Page](24-jenkins-pipeline-job-page.png "Jenkins Pipeline Job Page")
 
-29. Wait two minutes and then refresh. The initial build should appear.
+28. Wait two minutes and then refresh. The initial build should appear.
 
     > **NOTE** - No other builds will appear until there is a change in the repository.
 
