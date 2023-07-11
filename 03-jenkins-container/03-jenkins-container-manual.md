@@ -3,7 +3,7 @@
 These instructions will create a Jenkins container that requires the normal initial setup (i.e., unlocking Jenkins, creating an admin user, installing plugins). However, unlike the [Automatic Setup](/03-jenkins-container/03-jenkins-container-auto.md), the containerfile will also enable an SSH service, which will allow you to manage the container using Ansible.
 
 - [Create and Add the Jenkins Server Container to the Network](#create-and-add-the-jenkins-server-container-to-the-network)
-- [Access and Setup Jenkins](#access-jenkins)
+- [Access and Setup Jenkins](#access-and-setup-jenkins)
 
 > **WARNING** -  This is only a proof-of-concept demo for a single user! Do not use for production.
 

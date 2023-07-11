@@ -7,3 +7,4 @@ This repository contains my notes and instructions for creating a simple develop
 - [Podman Network Demo](/01-podman-network/01-podman-network.md)
 - [Subversion Container Demo](/02-svn-container/02-svn-container.md)
 - [Jenkins Container Demo](/03-jenkins-container/03-jenkins-container.md)
+- [Test Stage Demo](/04-testing/04-testing.md)

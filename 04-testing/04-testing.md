@@ -1,5 +1,20 @@
+# Pipeline Testing Stage Demo
 
-> **NOTE** - Adapted from http://pkuwwt.github.io/programming/2020-03-16-jenkins-continuous-integration-testing-for-flask/
+In this tutorial, you will use a Jenkins pipeline to test code and verify a file's integrity.
+
+- [Getting Started](#getting-started)
+- [Checkout the Repository](#checkout-the-repository)
+- [Create the Website](#create-the-website)
+- [See the Results in Jenkins](#see-the-results-in-jenkins)
+- [Summary](#summary)
+
+> **WARNING** -  This is only a proof-of-concept demo for a single user! Do not use for production.
+
+-----
+
+## Getting Started
+
+Ensure you have completed the steps in the [Jenkins Container Demo](/03-jenkins-container/03-jenkins-container.md).
 
 -----
 
@@ -40,19 +55,23 @@
     cd demorepo
     ```
 
-6.  Ensure your local repository is up-to-date with the remote repository. When prompted for the repository password, enter `Change.Me.123`:
+6. Ensure your local repository is up-to-date with the remote repository. When prompted for the repository password, enter `Change.Me.123`:
 
     ```
     svn update
     ```
 
-7. Create a dummy comma-separated values (CSV) data file:
+-----
+
+## Create the Website
+
+1. Create a dummy comma-separated values (CSV) data file:
 
     ```
     touch data.csv
     ```
 
-8. Using an editor of your choice, open `data.csv` and add the following data:
+2. Using an editor of your choice, open `data.csv` and add the following data:
 
     ```
     1,Delaware,1787
@@ -70,7 +89,7 @@
     13,Rhode Island,1790
     ```
 
-9. Get the SHA-256 hash of `data.csv`:
+3. Get the SHA-256 hash of `data.csv`:
 
     ```
     sha256sum data.csv
@@ -82,102 +101,103 @@
     c510534c3a1c3a6f015bcfdd0da8b29eb1fecde01d4ce43435a59d14d25e3980  data.csv
     ```
 
+4. Create a simple Flask application to read the data:
 
-10. Create a simple Flask application to read the data:
+   ```
+   touch app.py
+   ```
 
-    ```
-    touch app.py
-    ```
+5. Using an editor of your choice, open `app.py` and add the following code:
 
-11. Using an editor of your choice, open `app.py` and add the following code:
+   ```
+   from flask import Flask, render_template
+   import csv
 
-    ```
-    from flask import Flask, render_template
-    import csv
-
-    app = Flask(__name__)
-
-
-    @app.route('/')
-    def say_hello():
-        return '<h1>Hello, World!</h1>'
+   app = Flask(__name__)
 
 
-    @app.route('/data')
-    def show_data():
-        with open("data.csv") as file:
-            reader = csv.reader(file)
-            return render_template("data.html", csv=reader)
+   @app.route('/')
+   def say_hello():
+       return '<h1>Hello, World!</h1>'
 
 
-    if __name__ == '__main__':
-        app.run()
-    ```
+   @app.route('/data')
+   def show_data():
+       with open("data.csv") as file:
+           reader = csv.reader(file)
+           return render_template("data.html", csv=reader)
 
-12. Create an HTML page to display the data:
 
-    ```
-    mkdir -p templates
-    touch templates/data.html
-    ```
+   if __name__ == '__main__':
+       app.run()
+   ```
 
-13. Using an editor of your choice, open `data.html` and add the following code:
+6. Create an HTML page to display the data:
 
-    ```
-    <table id="first_states">
-        <caption>First 13 States</caption>
-        <tr>
-            <th>#</th>
-            <th>State</th>
-            <th>Year</th>
-        </tr>
-        {% for row in csv %}
-        <tr>
-            {% for col in row %}
-            <td>{{ col }}</td>
-            {% endfor %}
-        </tr>
-        {% endfor %}
-    </table>
-    ```
+   ```
+   mkdir -p templates
+   touch templates/data.html
+   ```
 
-14. Start the application:
+7. Using an editor of your choice, open `data.html` and add the following code:
 
-    ```
-    flask --app app run
-    ```
+   ```
+   <table id="first_states">
+       <caption>First 13 States</caption>
+       <tr>
+           <th>#</th>
+           <th>State</th>
+           <th>Year</th>
+       </tr>
+       {% for row in csv %}
+       <tr>
+           {% for col in row %}
+           <td>{{ col }}</td>
+           {% endfor %}
+       </tr>
+       {% endfor %}
+   </table>
+   ```
 
-    **Output:**
+8. Start the application:
 
-    ```
-     * Serving Flask app 'app'
-     * Debug mode: off
-    WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
-     * Running on http://127.0.0.1:5000
-    Press CTRL+C to quit
-    ```
+   ```
+   flask --app app run
+   ```
 
-15. Open a browser and navigate to the IPv4 address in the output (you may have to open a new Terminal):
+   **Output:**
 
-    ```
-    firefox http://127.0.0.1:5000
-    ```
+   ```
+    * Serving Flask app 'app'
+    * Debug mode: off
+   WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+    * Running on http://127.0.0.1:5000
+   Press CTRL+C to quit
+   ```
 
-    ![Testing: App Index Page](32-test-app-index-page.png "Testing: App Index Page")
+9. Open a browser and navigate to the IPv4 address in the output (you may have to open a new Terminal):
 
-16. Append "`/data`" to the end of the URL and the list of states should appear:
+   ```
+   firefox http://127.0.0.1:5000
+   ```
+
+   ![Testing: App Index Page](32-test-app-index-page.png "Testing: App Index Page")
+
+10. Append "`/data`" to the end of the URL and the list of states should appear:
 
     ![Testing: App Data Page](33-test-app-data-page.png "Testing: App Data Page")
 
-17. Stop the application in the original Terminal by pressing **[CTRL]** + **[C]**. Close the browser as well.
+11. Stop the application in the original Terminal by pressing **[CTRL]** + **[C]**. Close the browser as well.
 
-18. Create a unit test for your Flask application:
+12. Create a unit test for your Flask application:
 
     ```
     touch test_app.py
     ```
 
-19. Using an editor of your choice, open `test_app.py` and add the following code:
+13. Using an editor of your choice, open `test_app.py` and add the following code:
+
+    > **NOTE** - Adapted from http://pkuwwt.github.io/programming/2020-03-16-jenkins-continuous-integration-testing-for-flask/
 
     ```
     import unittest
@@ -201,7 +221,7 @@
         unittest.main(testRunner=runner)
     ```
 
-19. Run the test:
+14. Run the test:
 
     ```
     python3 test_app.py
@@ -221,7 +241,7 @@
     Generating XML reports...
     ```
 
-20. Using an editor of your choice, open the Jenkinsfile and add the following code:
+15. Using an editor of your choice, open the Jenkinsfile and add the following code:
 
     ```
     pipeline {
@@ -255,23 +275,44 @@
     }
     ```
 
-22. Add all the changes to your local repository:
+16. Add all the changes to your local repository:
 
     ```
     svn add . --force
     ```
 
-21. Push your changes to the remote repository. When prompted for the repository password, enter `Change.Me.123`:
+17. Push your changes to the remote repository. When prompted for the repository password, enter `Change.Me.123`:
 
     ```
     svn commit -m "Added simple Flask app with unit test."
     ```
 
-22. If it is not already open, access Jenkins in the browser and open the **pipline-demo** project:
+-----
+
+## See the Results in Jenkins
+
+1. If it is not already open, access Jenkins in the browser and open the **pipline-demo** project:
 
     ![Jenkins Dashboard with Project](/03-jenkins-container/27-jenkins-dashboard-with-project.png "Jenkins Dashboard with Project")
 
-23. Wait two minutes for Jenkins to contact the SVN server, then refresh the page. Another build should appear under **Build History**, along with the **Stage View***:
+2. Wait two minutes for Jenkins to contact the SVN server, then refresh the page. Another build should appear under **Build History**, along with the **Stage View***:
 
     > **NOTE** - If refresh does not work, click on **Build Now**.
 
+   ![Jenkins Project Page 3](34-jenkins-project-page-3.png "Jenkins Project Page 3")
+
+3. Click on the build (**#2**) under **Build History**. The build page should appear:
+
+   ![Jenkins Build Page 3](35-jenkins-build-page-3.png "Jenkins Build Page 2")
+
+4. On the **Build** page, click on the **Console Output** link. Look through the output, and you will see comments for each stage, as well as the success message of "Good to go!":
+
+   ![Jenkins Console Output 3](36-jenkins-console-output-3.png "Jenkins Console Output 2")
+
+5. Click on the **pipeline-demo** link at the top of the page to return to the project page.
+
+-----
+
+## Summary
+
+In this tutorial, you used a Jenkins pipeline to test code and verify a file's integrity. Remember, this is only a proof-of-concept demo for a single user; you should not use it for production.

@@ -118,7 +118,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     EXPOSE 8080
     ```
 
-4. Build the image:
+8. Build the image:
 
     > **NOTE** - Podman uses `/var/tmp` by default to download and build images. If a `No space left on device` error appears during the build, you can change the `image_copy_tmp_dir` setting in the `containers.conf` file, usually located in `/usr/share/containers/containers.conf`.
 
@@ -130,7 +130,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     sudo podman build --rm --tag=jenkins_node_image --file=jenkins-auto.containerfile
     ```
 
-5. Once complete, look at your image's information:
+9. Once complete, look at your image's information:
 
     ```
     sudo podman images
@@ -147,35 +147,35 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     > **NOTE** - Any repositories named `<none>` that appear are intermediate images, used to build the final image. However, the `--rm` option should have told Podman to delete them after a successful build.
 
-6. Using the new image, create an SVN node and attach it to the network:
+10. Using the new image, create an SVN node and attach it to the network:
 
-    ```
-    # Optional; stop and remove the node if it exists
-    sudo podman stop jenkins_node
-    sudo podman rm jenkins_node
-    # Create the node and attach it to the network
-    sudo podman run -dt --name jenkins_node --replace --restart=unless-stopped --net devnet --ip 192.168.168.20 --cap-add AUDIT_WRITE jenkins_node_image
-    ```
+     ```
+     # Optional; stop and remove the node if it exists
+     sudo podman stop jenkins_node
+     sudo podman rm jenkins_node
+     # Create the node and attach it to the network
+     sudo podman run -dt --name jenkins_node --replace --restart=unless-stopped --net devnet --ip 192.168.168.20 --cap-add AUDIT_WRITE jenkins_node_image
+     ```
 
-7. Look at the containers:
+11. Look at the containers:
 
-    ```
-    sudo podman ps --all
-    ```
+     ```
+     sudo podman ps --all
+     ```
 
-    **Output (other nodes may also appear):**
+     **Output (other nodes may also appear):**
 
-    ```
-    CONTAINER ID  IMAGE                                COMMAND     CREATED             STATUS              PORTS       NAMES
-    e01d98f007f5  localhost/jenkins_node_image:latest  /sbin/init  About a minute ago  Up About a minute               jenkins_node
-    ...
-    ```
+     ```
+     CONTAINER ID  IMAGE                                COMMAND     CREATED             STATUS              PORTS       NAMES
+     e01d98f007f5  localhost/jenkins_node_image:latest  /sbin/init  About a minute ago  Up About a minute               jenkins_node
+     ...
+     ```
 
-8. Check the IPv4 addresses of the node; it should be `192.168.168.20`:
+12. Check the IPv4 addresses of the node; it should be `192.168.168.20`:
 
-    ```
-    sudo podman inspect jenkins_node -f '{{ .NetworkSettings.Networks.devnet.IPAddress }}'
-    ```
+     ```
+     sudo podman inspect jenkins_node -f '{{ .NetworkSettings.Networks.devnet.IPAddress }}'
+     ```
 
 -----
 

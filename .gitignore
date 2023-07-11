@@ -1,3 +1,4 @@
 .idea
 .vscode
 .scratch
+__pycache__

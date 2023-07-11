@@ -52,7 +52,7 @@ Once you have set up Jenkins, return here and continue the tutorial.
 
 4. Scroll down to the **Build Triggers** section and select **Poll SCM**. A new set of options should appear:
 
-    - **Schedule**: Enter *** "H/2 * * * * " *** (this will poll the SVN server every two minutes).
+    - **Schedule**: Enter ***"H/2 \* \* \* \*"*** (this will poll the SVN server every two minutes).
 
 5. Scroll down to the **Pipeline** section and enter the following script:
 
@@ -88,7 +88,7 @@ Once you have set up Jenkins, return here and continue the tutorial.
 
     ![Jenkins Console Output 1](26-jenkins-console-output-1.png "Jenkins Console Output 1")
 
-11. Click on the **pipeline-demo** link at the top of the page to return to the project page.
+10. Click on the **pipeline-demo** link at the top of the page to return to the project page.
 
 -----
 
