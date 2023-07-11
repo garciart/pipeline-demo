@@ -352,7 +352,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     Committed revision 1.
     ```
 
-7. Open a browser, if one is not already open, and navigate to the IPv4 address of the repository:
+7. Open a browser, if one is not already open. Either refresh the repository page or navigate to the IPv4 address of the repository:
 
     ```
     firefox 192.168.168.10/svn/demorepo
