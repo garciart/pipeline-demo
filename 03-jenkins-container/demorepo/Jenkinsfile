@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                echo "Building ${env.JOB_NAME}..."
+            }
+        }
+        stage('Test') {
+            steps {
+                echo "Testing ${env.JOB_NAME}..."
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo "Deploying ${env.JOB_NAME}..."
+            }
+        }
+    }
+    post {
+        success {
+            echo "Good to go!"
+        }
+        failure {
+            echo "Houston, we've had a problem."
+        }
+    }
+}

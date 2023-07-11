@@ -27,7 +27,7 @@ You will also need Subversion on the development host. To install it, open a Ter
 
 ## Create and Add the Subversion Server Container to the Network
 
-For this tutorial, you will use the freely available Rocky Linux 8 image as the operating system for your containers. However, you may use other comparable images, such as Alma Linux or a Red Hat's Universal Base Image (UBI) (subscription required).
+For this tutorial, you will use the freely available AlmaLinux 8 image as the operating system for your containers. However, you may use other comparable images, such as CentOS, Rocky Linux, or a Red Hat's Universal Base Image (UBI) (subscription required).
 
 1. Open a Terminal, if one is not already open.
 
@@ -59,13 +59,14 @@ For this tutorial, you will use the freely available Rocky Linux 8 image as the 
 5. Using an editor of your choice, open `svn.containerfile` and add the following code:
 
     ```
-    # Pull a Docker or Podman image. For this demo, you will use Rocky Linux 8
-    FROM rockylinux:8
+    # Pull a Docker or Podman image. For this demo, you will use AlmaLinux 8
+    FROM almalinux:8
 
     # Ensure system is up-to-date
     RUN yum -y update &&\
         yum -y upgrade &&\
-        yum -y clean all
+        yum -y clean all &&\
+        yum -y autoremove
 
     # Ensure the passwd utility is installed
     RUN yum -y install passwd
@@ -95,7 +96,8 @@ For this tutorial, you will use the freely available Rocky Linux 8 image as the 
         sed 's@session\s*required\s*pam_loginuid.so@#session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
 
     # Prevent 'System is booting up. Unprivileged users are not permitted to log in yet' error when not root
-    RUN rm /run/nologin
+    # Do not exit on error if the directory does not exist: rm /run/nologin || true
+    RUN rm /run/nologin || :
 
     # Pass environment variables 
     # https://stackoverflow.com/questions/36292317/why-set-visible-now-in-etc-profile
@@ -167,7 +169,7 @@ For this tutorial, you will use the freely available Rocky Linux 8 image as the 
     ```
     REPOSITORY                    TAG         IMAGE ID      CREATED             SIZE
     localhost/svn_node_image      latest      ba37891ab764  About a minute ago  434 MB
-    docker.io/library/rockylinux  8           4e97feadb276  6 weeks ago         204 MB
+    docker.io/library/almalinux   8           4e97feadb276  6 weeks ago         204 MB
     ...
     ```
 
@@ -239,7 +241,7 @@ For this tutorial, you will use the freely available Rocky Linux 8 image as the 
     svn checkout http://192.168.168.10/svn/demorepo/
     ```
 
-3. When prompted for your sudo credentials, enter your password:
+3. If prompted for your sudo credentials, enter your password:
 
     ```
     Authentication realm: <http://192.168.168.10:80> SVN Repository

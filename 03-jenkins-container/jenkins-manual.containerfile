@@ -1,10 +1,11 @@
-# Pull a Docker or Podman image. For this demo, you will use Rocky Linux 8
-FROM rockylinux:8
+# Pull a Docker or Podman image. For this demo, you will use AlmaLinux 8
+FROM almalinux:8
 
 # Ensure system is up-to-date
 RUN yum -y update &&\
-yum -y upgrade &&\
-yum -y clean all
+    yum -y upgrade &&\
+    yum -y clean all &&\
+    yum -y autoremove
 
 # Ensure the passwd utility is installed
 RUN yum -y install passwd
@@ -12,29 +13,30 @@ RUN yum -y install passwd
 # Create a non-root user and create a root password
 # useradd  --comment "Default User Account" --create-home -groups wheel user
 RUN useradd -c "Default User Account" -m -G wheel user &&\
-echo Change.Me.123 | passwd user --stdin &&\
-echo Change.Me.321 | passwd root --stdin
+    echo Change.Me.123 | passwd user --stdin &&\
+    echo Change.Me.321 | passwd root --stdin
 
 # Adapted from https://access.redhat.com/solutions/7015042
 # Install openssh, httpd, and sudo
 RUN yum -y install openssh openssh-askpass openssh-clients openssh-server &&\
-yum -y install httpd &&\
-yum -y install sudo
+    yum -y install httpd &&\
+    yum -y install sudo
 
 # Enable the HTTP and SSH daemons
 RUN systemctl enable httpd &&\
-systemctl enable sshd
+    systemctl enable sshd
 
 # Customize the SSH daemon
 RUN mkdir /var/run/sshd &&\
-ssh-keygen -A &&\
-cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak &&\
-sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config &&\
-cp /etc/pam.d/sshd /etc/pam.d/sshd.bak &&\
-sed 's@session\s*required\s*pam_loginuid.so@#session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+    ssh-keygen -A &&\
+    cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak &&\
+    sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config &&\
+    cp /etc/pam.d/sshd /etc/pam.d/sshd.bak &&\
+    sed 's@session\s*required\s*pam_loginuid.so@#session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
 
 # Prevent 'System is booting up. Unprivileged users are not permitted to log in yet' error when not root
-RUN rm /run/nologin
+# Do not exit on error if the directory does not exist: rm /run/nologin || true
+RUN rm /run/nologin || :
 
 # Pass environment variables 
 # https://stackoverflow.com/questions/36292317/why-set-visible-now-in-etc-profile
@@ -48,12 +50,15 @@ RUN yum -y install java-11-openjdk-devel fontconfig
 RUN yum -y install wget
 
 # Get the Jenkins repo and key
-RUN wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
-RUN rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+RUN wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo &&\
+    rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key &&\
+    yum makecache
 
-# Install Jenkins and enable after restart
-RUN yum -y install jenkins &&\
-    systemctl enable jenkins
+# Install Jenkins
+RUN yum -y install jenkins
+
+# Enable Jenkins as a service
+RUN systemctl enable jenkins
 
 # Allow traffic through ports 22 (SSH), 80 (HTTP), and 8080 (Jenkins)
 EXPOSE 22 80 8080

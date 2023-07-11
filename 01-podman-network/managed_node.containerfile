@@ -1,10 +1,11 @@
-# Pull a Docker or Podman image. For this demo, you will use Rocky Linux 8
-FROM rockylinux:8
+# Pull a Docker or Podman image. For this demo, you will use AlmaLinux 8
+FROM almalinux:8
 
 # Ensure system is up-to-date
 RUN yum -y update &&\
     yum -y upgrade &&\
-    yum -y clean all
+    yum -y clean all &&\
+    yum -y autoremove
 
 # Ensure the passwd utility is installed
 RUN yum -y install passwd
@@ -34,7 +35,8 @@ RUN mkdir /var/run/sshd &&\
     sed 's@session\s*required\s*pam_loginuid.so@#session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
 
 # Prevent 'System is booting up. Unprivileged users are not permitted to log in yet' error when not root
-RUN rm /run/nologin
+# Do not exit on error if the directory does not exist: rm /run/nologin || true
+RUN rm /run/nologin || :
 
 # Pass environment variables 
 # https://stackoverflow.com/questions/36292317/why-set-visible-now-in-etc-profile
