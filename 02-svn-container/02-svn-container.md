@@ -120,7 +120,8 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
         chmod 640 /etc/svn/svn-auth-users
 
     # Create a repository
-    RUN mkdir --parents /var/www/svn &&\
+    RUN export LC_ALL=C &&\
+        mkdir --parents /var/www/svn &&\
         cd /var/www/svn/ &&\
         svnadmin create demorepo
 

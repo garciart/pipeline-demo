@@ -17,5 +17,5 @@ pam-auth
 ldap
 email-ext
 mailer
-junit
 subversion
+junit

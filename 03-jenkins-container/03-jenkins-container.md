@@ -1,4 +1,4 @@
-# Jenkins Container Demo (Manual Setup)
+# Jenkins Container Demo
 
 In this tutorial, you will run a Jenkins automation server in a container, to manage continuous integration and continuous delivery (CI/CD) tasks.
 
@@ -30,7 +30,7 @@ You have two options:
 
 - **[Manual Setup](/03-jenkins-container/03-jenkins-container-manual.md)**: These instructions will create a Jenkins container that requires the normal initial setup (i.e., unlocking Jenkins, creating an admin user, installing plugins). However, unlike the [Automatic Setup](/03-jenkins-container/03-jenkins-container-auto.md), the containerfile will also enable an SSH service, which will allow you to manage the container using Ansible.
 
-- **[Automatic Setup](/03-jenkins-container/03-jenkins-container-auto.md)**: These instructions will create a Jenkins container that is unlocked, configured with an admin user, and with the recommended plugins (plus JUnit and Subversion) already installed; it will not require you to perform the normal initial setup process for Jemkins. However, unlike the [Manual Setup](/03-jenkins-container/03-jenkins-container-manual.md), the containerfile will **NOT** enable an SSH service that can be accessed using Ansible. You will still be able to execute `sudo podman exec jenkins_node` commands, though.
+- **[Automatic Setup](/03-jenkins-container/03-jenkins-container-auto.md)**: These instructions will create a Jenkins container that is unlocked, configured with an admin user, and with the recommended plugins (plus Subversion and JUnit) already installed; it will not require you to perform the normal initial setup process for Jemkins. However, unlike the [Manual Setup](/03-jenkins-container/03-jenkins-container-manual.md), the containerfile will **NOT** enable an SSH service that can be accessed using Ansible. You will still be able to execute `sudo podman exec jenkins_node` commands, though.
 
 Once you have set up Jenkins, return here and continue the tutorial.
 
@@ -204,29 +204,29 @@ Once you have set up Jenkins, return here and continue the tutorial.
 
 15. Scroll down and uncheck the **Lightweight checkout** checkbox.
 
-8. Click on **Save** when finished. The pipeline-demo job page should reappear:
+16. Click on **Save** when finished. The pipeline-demo job page should reappear:
 
     ![Jenkins Pipeline Job Page](24-jenkins-initial-build.png "Jenkins Pipeline Job Page")
 
-9. Wait two minutes for Jenkins to contact the SVN server, then refresh the page. Another build should appear under **Build History**, along with the **Stage View***:
+17. Wait two minutes for Jenkins to contact the SVN server, then refresh the page. Another build should appear under **Build History**, along with the **Stage View***:
 
     > **NOTE** - If refresh does not work, click on **Build Now**.
 
     ![Jenkins Jenkinsfile Build](29-jenkins-jenkinsfile-build.png "Jenkins Jenkinsfile Build")
 
-12. Now that there is a Jenkinsfile in the repository, Jenkins will run it every time there is a change in the repository. You can use the Jenkinsfile to run tests, scans, and to deploy code to a server.
+18. Now that there is a Jenkinsfile in the repository, Jenkins will run it every time there is a change in the repository. You can use the Jenkinsfile to run tests, scans, and to deploy code to a server.
 
     > **NOTE** - If you want to rerun the Jenkinsfile, simply click **Build Now**.
     
-13. Click on the build (**#2**) under **Build History**. The build page should appear:
+19. Click on the build (**#2**) under **Build History**. The build page should appear:
 
     ![Jenkins Build Page 2](30-jenkins-build-page-2.png "Jenkins Build Page 2")
 
-14. On the **Build** page, click on the **Console Output** link. Look through the output, and you will see comments for each stage, as well as the success message of "Good to go!":
+20. On the **Build** page, click on the **Console Output** link. Look through the output, and you will see comments for each stage, as well as the success message of "Good to go!":
 
     ![Jenkins Console Output 2](31-jenkins-console-output-2.png "Jenkins Console Output 2")
 
-16. Click on the **pipeline-demo** link at the top of the page to return to the project page.
+21. Click on the **pipeline-demo** link at the top of the page to return to the project page.
 
 -----
 

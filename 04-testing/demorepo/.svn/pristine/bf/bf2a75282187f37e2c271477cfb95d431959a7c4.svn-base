@@ -1,0 +1,29 @@
+pipeline {
+    agent {
+        any {
+            image 'almalinux:8'
+        }
+    }
+    stages {
+        stage('build') {
+            steps {
+                sh 'cat /etc/os-release'
+                sh 'python -m pip install --user Flask'
+                sh 'python -m pip install --user xmlrunner'
+            }
+        }
+        stage('test') {
+            steps {
+                // Ensure the data.csv file is not corrupted
+                sh 'echo "c510534c3a1c3a6f015bcfdd0da8b29eb1fecde01d4ce43435a59d14d25e3980  data.csv" | sha256sum -c'
+                // Unit test app.py
+                sh 'python3 test_app.py'
+            }
+            post {
+                always {
+                    junit 'test-reports/*.xml'
+                }
+            }
+        }
+    }
+}

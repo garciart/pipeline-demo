@@ -1,6 +1,6 @@
 # Jenkins Container Demo (Automatic Setup)
 
-These instructions will create a Jenkins container that is unlocked, configured with an admin user, and with the recommended plugins (plus JUnit and Subversion) already installed; it will not require you to perform the normal initial setup process for Jemkins. However, unlike the [Manual Setup](/03-jenkins-container/03-jenkins-container-manual.md), the containerfile will **NOT** enable an SSH service that can be accessed using Ansible. You will still be able to execute `sudo podman exec jenkins_node` commands, though.
+These instructions will create a Jenkins container that is unlocked, configured with an admin user, and with the recommended plugins (plus Subversion and JUnit) already installed; it will not require you to perform the normal initial setup process for Jemkins. However, unlike the [Manual Setup](/03-jenkins-container/03-jenkins-container-manual.md), the containerfile will **NOT** enable an SSH service that can be accessed using Ansible. You will still be able to execute `sudo podman exec jenkins_node` commands, though.
 
 - [Create and Add the Jenkins Server Container to the Network](#create-and-add-the-jenkins-server-container-to-the-network)
 - [Access and Setup Jenkins](#access-and-setup-jenkins)
@@ -51,7 +51,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 5. Using an editor of your choice, open `plugins.txt` and add the following plugins:
 
-    **NOTE** - This is a list of Jenkins' default and recommended plugins. It also includes the JUnit and Subversion plugins, which you will need for this tutorial. However, you can customize this list to fit your needs.
+    **NOTE** - This is a list of Jenkins' default and recommended plugins. It also includes the Subversion and JUnit plugins, which you will need for this tutorial. However, you can customize this list to fit your needs.
 
     ```
     cloudbees-folder
@@ -73,7 +73,6 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     ldap
     email-ext
     mailer
-    junit
     subversion
     ```
 
@@ -101,7 +100,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     # Use a Groovy script to configure the admin user
     COPY init.groovy /usr/share/jenkins/ref/init.groovy.d/
 
-    # Install the recommended plugins, plus the JUnit and Subversion plugins
+    # Install the recommended plugins, plus the Subversion and JUnit plugins
     # https://github.com/jenkinsci/jenkins/blob/master/core/src/main/resources/jenkins/install/platform-plugins.json
     COPY --chown=jenkins:jenkins plugins.txt /usr/share/jenkins/ref/plugins.txt
     RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.txt
@@ -111,6 +110,9 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     # Create a root password
     RUN echo Change.Me.321 | passwd root --stdin
+
+    # Install Python for Flask demo
+    RUN yum -y install python39
 
     # Allow traffic through port 8080 (Jenkins)
     EXPOSE 8080

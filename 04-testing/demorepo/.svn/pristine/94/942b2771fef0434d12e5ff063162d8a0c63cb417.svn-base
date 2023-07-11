@@ -1,0 +1,35 @@
+pipeline {
+    agent {
+        any {
+            image 'almalinux:8'
+        }
+    }
+    stages {
+        stage('build') {
+            steps {
+                sh 'cat /etc/os-release'
+                sh 'yum -y install python3'
+                sh 'python3 -m pip install --user Flask'
+                sh 'python3 -m pip install --user xmlrunner'
+                sh 'yum -y install epel-release'
+                sh 'yum -y install clamav'
+                sh '/usr/bin/freshclam'
+            }
+        }
+        stage('test') {
+            steps {
+                // Ensure the data.csv file is not corrupted
+                sh 'echo "c510534c3a1c3a6f015bcfdd0da8b29eb1fecde01d4ce43435a59d14d25e3980  data.csv" | sha256sum -c'
+                // Unit test app.py
+                sh 'python3 test_app.py'
+                // Scan files
+                sh 'clamscan app.py data.csv test_app.py templates/data.html'
+            }
+            post {
+                always {
+                    junit 'test-reports/*.xml'
+                }
+            }
+        }
+    }
+}

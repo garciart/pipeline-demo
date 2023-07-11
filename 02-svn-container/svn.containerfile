@@ -59,7 +59,9 @@ RUN mkdir --parents /etc/svn &&\
     chmod 640 /etc/svn/svn-auth-users
 
 # Create a repository
-RUN mkdir --parents /var/www/svn &&\
+# Create a repository
+RUN export LC_ALL=C &&\
+    mkdir --parents /var/www/svn &&\
     cd /var/www/svn/ &&\
     svnadmin create demorepo
 

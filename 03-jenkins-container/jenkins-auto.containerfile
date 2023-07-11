@@ -13,7 +13,7 @@ ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
 # Use a Groovy script to configure the admin user
 COPY init.groovy /usr/share/jenkins/ref/init.groovy.d/
 
-# Install the recommended plugins, plus the JUnit and Subversion plugins
+# Install the recommended plugins, plus the Subversion and JUnit plugins
 # https://github.com/jenkinsci/jenkins/blob/master/core/src/main/resources/jenkins/install/platform-plugins.json
 COPY --chown=jenkins:jenkins plugins.txt /usr/share/jenkins/ref/plugins.txt
 RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.txt
@@ -23,6 +23,9 @@ RUN yum -y install passwd
 
 # Create a root password
 RUN echo Change.Me.321 | passwd root --stdin
+
+# Install Python for Flask demo
+RUN yum -y install python39
 
 # Allow traffic through port 8080 (Jenkins)
 EXPOSE 8080

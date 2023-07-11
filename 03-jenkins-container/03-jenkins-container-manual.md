@@ -86,6 +86,9 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     # Enable Jenkins as a service
     RUN systemctl enable jenkins
 
+    # Install Python for Flask demo
+    RUN yum -y install python39
+
     # Allow traffic through ports 22 (SSH), 80 (HTTP), and 8080 (Jenkins)
     EXPOSE 22 80 8080
 
