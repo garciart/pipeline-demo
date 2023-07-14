@@ -369,4 +369,4 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 ## Summary
 
-In this tutorial, you ran Apache Subversion in a container and updated a repository. Remember, this is only a proof-of-concept demo for a single user; you should not use it for production.
+In this tutorial, you ran Apache Subversion in a container and updated a repository. Please continue to the [Jenkins Container Demo](/03-jenkins-container/03-jenkins-container.md). Remember, this is only a proof-of-concept demo for a single user; you should not use it for production.

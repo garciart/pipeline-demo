@@ -468,4 +468,4 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 ## Summary
 
-In this tutorial, you have created a simple network of containers, with each container running an HTTP and SSH service. Remember, this is only a proof-of-concept demo for a single user; you should not use it for production.
+In this tutorial, you have created a simple network of containers, with each container running an HTTP and SSH service. Please continue to the [Subversion Container Demo](/02-svn-container/02-svn-container.md). Remember, this is only a proof-of-concept demo for a single user; you should not use it for production.
