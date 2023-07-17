@@ -1,6 +1,6 @@
 # Subversion Container Demo
 
-In this tutorial, you will run Apache Subversion, known as SVN, in a container, to act as a software versioning and revision control server.
+In this tutorial, you will run Apache Subversion, known as SVN, in a container, to act as a software versioning and revision control server. You will also create a *volume* to store repository data; if the container fails, your repository is not lost.
 
 - [Getting Started](#getting-started)
 - [Create and Add the Subversion Server Container to the Network](#create-and-add-the-subversion-server-container-to-the-network)
@@ -50,13 +50,39 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     </Location>
     ```
 
-4. Create a containerfile:
+4. Storing data in a container is not a good idea; if the container stops working, you will lose all of your data. A better option is to use a **volume**; it uses persistent storage on your development host; it can be backed up; and it can be shared with other containers. Create and inspect a volume now:
+
+    ```
+    sudo podman volume create svn-root
+    sudo podman volume inspect svn-root
+    ```
+
+    **Output:**
+
+    ```
+    [
+        {
+            "Name": "svn-root",
+            "Driver": "local",
+            "Mountpoint": "/var/lib/containers/storage/volumes/svn-root/_data",
+            "CreatedAt": "2023-07-16T21:39:09.03290734-04:00",
+            "Labels": {},
+            "Scope": "local",
+            "Options": {},
+            "MountCount": 0,
+            "NeedsCopyUp": true,
+            "NeedsChown": true
+        }
+    ]
+    ```
+
+5. Create a containerfile:
 
     ```
     touch svn.containerfile
     ```
 
-5. Using an editor of your choice, open `svn.containerfile` and add the following code:
+6. Using an editor of your choice, open `svn.containerfile` and add the following code:
 
     ```
     # Pull a Docker or Podman image. For this demo, you will use AlmaLinux 8
@@ -147,7 +173,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     CMD [ "/sbin/init" ]
     ```
 
-6. Build the image:
+7. Build the image:
 
     > **NOTE** - Podman uses `/var/tmp` by default to download and build images. If a `No space left on device` error appears during the build, you can change the `image_copy_tmp_dir` setting in the `containers.conf` file, usually located in `/usr/share/containers/containers.conf`.
 
@@ -159,7 +185,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     sudo podman build --rm --tag=svn_node_image --file=svn.containerfile
     ```
 
-7. Once complete, look at your image's information:
+8. Once complete, look at your image's information:
 
     ```
     sudo podman images
@@ -176,17 +202,17 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     > **NOTE** - Any repositories named `<none>` that appear are intermediate images, used to build the final image. However, the `--rm` option should have told Podman to delete them after a successful build.
 
-8. Using the new image, create an SVN node and attach it to the network:
+9. Using the new image, create an SVN node and attach it to the volume and the network:
 
     ```
     # Optional; stop and remove the node if it exists
     sudo podman stop svn_node
     sudo podman rm svn_node
     # Create the node and attach it to the network
-    sudo podman run -dt --name svn_node --replace --restart=unless-stopped --net devnet --ip 192.168.168.10 --cap-add AUDIT_WRITE svn_node_image
+    sudo podman run -dt --name svn_node --replace --restart=unless-stopped -v svn-root:/var/www/svn -w /var/www/svn --net devnet --ip 192.168.168.10 --cap-add AUDIT_WRITE svn_node_image
     ```
 
-9. Look at the containers:
+10. Look at the containers:
 
     ```
     sudo podman ps --all
@@ -200,7 +226,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     ...
     ```
 
-10. Check the IPv4 addresses of the node; it should be `192.168.168.10`:
+11. Check the IPv4 addresses of the node; it should be `192.168.168.10`:
 
     ```
     sudo podman inspect svn_node -f '{{ .NetworkSettings.Networks.devnet.IPAddress }}'
@@ -365,8 +391,34 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     ![Updated demorepo Landing Page](04-svn-updated-demorepo.png "Updated demorepo Landing Page")
 
+10. Return to the terminal and look at the commit in the volume, using the **svnlook** command:
+
+    ```
+    sudo svnlook info /var/lib/containers/storage/volumes/svn-root/_data/demorepo
+    ```
+
+    **Output:**
+
+    ```
+    svnuser
+    2023-07-16 22:33:26 -0400 (Sun, 16 Jul 2023)
+    15
+    Initial commit.
+    ```
+
+    ```
+    sudo svnlook tree /var/lib/containers/storage/volumes/svn-root/_data/demorepo
+    ```
+
+    **Output:**
+
+    ```
+    /
+    README.md
+    ```
+
 -----
 
 ## Summary
 
-In this tutorial, you ran Apache Subversion in a container and updated a repository. Please continue to the [Jenkins Container Demo](/03-jenkins-container/03-jenkins-container.md). Remember, this is only a proof-of-concept demo for a single user; you should not use it for production.
+In this tutorial, you ran Apache Subversion in a container and updated a repository. You also created a *volume* to store repository data, so that if the container fails, your repository is not lost. Please continue to the [Jenkins Container Demo](/03-jenkins-container/03-jenkins-container.md). Remember, this is only a proof-of-concept demo for a single user; you should not use it for production.

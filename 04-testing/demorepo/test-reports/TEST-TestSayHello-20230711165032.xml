@@ -1,6 +1,0 @@
-<?xml version="1.0" ?>
-<testsuite name="TestSayHello-20230711165032" tests="1" time="0.003" failures="0" errors="0">
-	<testcase classname="TestSayHello" name="test_say_hello" time="0.003"/>
-	<system-out><![CDATA[]]></system-out>
-	<system-err><![CDATA[]]></system-err>
-</testsuite>
