@@ -53,6 +53,10 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 4. Storing data in a container is not a good idea; if the container stops working, you will lose all of your data. A better option is to use a **volume**; it uses persistent storage on your development host; it can be backed up; and it can be shared with other containers. Create and inspect a volume now:
 
     ```
+    # Optional; remove old volumes if they exist
+    sudo podman volume prune --force
+    sudo podman volume rm svn-root --force
+    # Create the volume
     sudo podman volume create svn-root
     sudo podman volume inspect svn-root
     ```
@@ -75,6 +79,8 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
         }
     ]
     ```
+
+    Remember the `Mountpoint` directory; you will need it later.
 
 5. Create a containerfile:
 
@@ -391,7 +397,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     ![Updated demorepo Landing Page](04-svn-updated-demorepo.png "Updated demorepo Landing Page")
 
-10. Return to the terminal and look at the commit in the volume, using the **svnlook** command:
+10. Return to the Terminal and look at the commit in the volume's mountpoint, using the **svnlook** command:
 
     ```
     sudo svnlook info /var/lib/containers/storage/volumes/svn-root/_data/demorepo

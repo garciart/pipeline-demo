@@ -56,7 +56,7 @@ Once you have set up Jenkins, return here and continue the tutorial.
 
 5. Scroll down to the **Pipeline** section and enter the following script:
 
-    ```
+    ```Groovy
     pipeline {
         agent any
 
@@ -96,50 +96,75 @@ Once you have set up Jenkins, return here and continue the tutorial.
 
 > **NOTE** - Ensure you have installed Subversion on the development host: `sudo yum -y install subversion`
 
-1. Open a Terminal, if one is not already open.
+1. If it is not already open, access Jenkins in the browser and open the **pipline-demo** project:
 
-2. Checkout the repository:
+    ![Jenkins Dashboard with Project](27-jenkins-dashboard-with-project.png "Jenkins Dashboard with Project")
 
-    ```
+2. Click on **Configure**.
+
+3. Scroll down to the **Pipeline** section and select **Pipeline script from SCM** from the **Definition** dropdown list. This will allow you to run custom build, using a Jenkinsfile stored in your repository.
+
+4. Select **Subversion** from the **SCM** dropdown list. A new set of options should appear:
+
+    - **Repository URL**: Enter ***"<http://192.168.168.10/svn/demorepo>"***.
+    - **Credentials**:
+        - Click **Add**, then click on the **Jenkins Credentials Provider** button.
+        - When the Jenkins Credentials Provider screen appears, enter ***"svnuser"*** for the username and ***"Change.Me.123"*** for the password, then click on **Add**.
+
+            ![Jenkins Credentials Provider](28-jenkins-credentials-provider.png "Jenkins Credentials Provider")
+
+        - Go back to the **Credentials** dropdown list and select the **svnuser**.
+
+5. Scroll down and uncheck the **Lightweight checkout** checkbox.
+
+6. Click on **Save** when finished. The pipeline-demo job page should reappear:
+
+    ![Jenkins Pipeline Job Page](24-jenkins-initial-build.png "Jenkins Pipeline Job Page")
+
+7. Open a Terminal, if one is not already open.
+
+8. Checkout the repository:
+
+    ```bash
     svn checkout http://192.168.168.10/svn/demorepo/
     ```
 
-3. If prompted for your sudo credentials, enter your password:
+9. If prompted for your sudo credentials, enter your password:
 
-    ```
+    ```bash
     Authentication realm: <http://192.168.168.10:80> SVN Repository
     Password for '<your username>': *************
     ```
 
-4. When prompted for the repository credentials, enter ***"svnuser"*** for the username and ***"Change.Me.123"*** for the password:
+10. When prompted for the repository credentials, enter ***"svnuser"*** for the username and ***"Change.Me.123"*** for the password:
 
-    ```
+    ```bash
     Authentication realm: <http://192.168.168.10:80> SVN Repository
     Username: svnuser
     Password for 'svnuser': *************
     ```
 
-5. Navigate to the repository directory:
+11. Navigate to the repository directory:
 
-    ```
+    ```bash
     cd demorepo
     ```
 
-6.  Ensure your local repository is up-to-date with the remote repository. When prompted for the repository password, enter ***"Change.Me.123"***:
+12. Ensure your local repository is up-to-date with the remote repository. When prompted for the repository password, enter ***"Change.Me.123"***:
 
-    ```
+    ```bash
     svn update
     ```
 
-7. Create a Jenkinsfile:
+13. Create a Jenkinsfile:
 
-    ```
+    ```bash
     touch Jenkinsfile
     ```
 
-8. Using an editor of your choice, open the Jenkinsfile and add the following code:
+14. Using an editor of your choice, open the Jenkinsfile and add the following code:
 
-    ```
+    ```bash
     pipeline {
         agent any
 
@@ -171,44 +196,19 @@ Once you have set up Jenkins, return here and continue the tutorial.
     }
     ```
 
-9. Add the Jenkinsfile to your local repository:
+15. Add the Jenkinsfile to your local repository:
 
-    ```
+    ```bash
     svn add . --force
     ```
 
-10. Push your changes to the remote repository. When prompted for the repository password, enter ***"Change.Me.123"***:
+16. Push your changes to the remote repository. When prompted for the repository password, enter ***"Change.Me.123"***:
 
-    ```
+    ```bash
     svn commit -m "Added Jenkinsfile."
     ```
 
-11. If it is not already open, access Jenkins in the browser and open the **pipline-demo** project:
-
-    ![Jenkins Dashboard with Project](27-jenkins-dashboard-with-project.png "Jenkins Dashboard with Project")
-
-12. Click on **Configure**.
-
-13. Scroll down to the **Pipeline** section and select **Pipeline script from SCM** from the **Definition** dropdown list. This will allow you to run custom build, using a Jenkinsfile stored in your repository.
-
-14. Select **Subversion** from the **SCM** dropdown list. A new set of options should appear:
-
-    - **Repository URL**: Enter ***"http://192.168.168.10/svn/demorepo"***.
-    - **Credentials**:
-        - Click **Add**, then click on the **Jenkins Credentials Provider** button.
-        - When the Jenkins Credentials Provider screen appears, enter ***"svnuser"*** for the username and ***"Change.Me.123"*** for the password, then click on **Add**.
-
-            ![Jenkins Credentials Provider](28-jenkins-credentials-provider.png "Jenkins Credentials Provider")
-
-        - Go back to the **Credentials** dropdown list and select the **svnuser**.
-
-15. Scroll down and uncheck the **Lightweight checkout** checkbox.
-
-16. Click on **Save** when finished. The pipeline-demo job page should reappear:
-
-    ![Jenkins Pipeline Job Page](24-jenkins-initial-build.png "Jenkins Pipeline Job Page")
-
-17. Wait two minutes for Jenkins to contact the SVN server, then refresh the page. Another build should appear under **Build History**, along with the **Stage View***:
+17. Go back to Jenkins, wait two minutes for Jenkins to contact the SVN server, then refresh the page. Another build should appear under **Build History**, along with the **Stage View***:
 
     > **NOTE** - If refresh does not work, click on **Build Now**.
 
@@ -217,7 +217,7 @@ Once you have set up Jenkins, return here and continue the tutorial.
 18. Now that there is a Jenkinsfile in the repository, Jenkins will run it every time there is a change in the repository. You can use the Jenkinsfile to run tests, scans, and to deploy code to a server.
 
     > **NOTE** - If you want to rerun the Jenkinsfile, simply click **Build Now**.
-    
+
 19. Click on the build (**#2**) under **Build History**. The build page should appear:
 
     ![Jenkins Build Page 2](30-jenkins-build-page-2.png "Jenkins Build Page 2")
