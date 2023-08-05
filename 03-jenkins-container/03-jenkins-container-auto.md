@@ -17,13 +17,13 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 2. Create a Groovy Hook Script. Jenkins will run this script after it starts up:
 
-    ```
+    ```bash
     touch init.groovy
     ```
 
 3. Using an editor of your choice, open `init.groovy` and add the following code:
 
-    ```
+    ```groovy
     import jenkins.model.*
     import hudson.security.*
 
@@ -45,7 +45,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 4. Create a file to hold the list of plugins you want Jenkins to use. The `jenkins-plugin-manager.jar` file will read the list and install the plugins after Jenkins starts up:
 
-    ```
+    ```bash
     touch plugins.txt
     ```
 
@@ -53,7 +53,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     **NOTE** - This is a list of Jenkins' default and recommended plugins. It also includes the Subversion and JUnit plugins, which you will need for this tutorial. However, you can customize this list to fit your needs.
 
-    ```
+    ```text
     cloudbees-folder
     antisamy-markup-formatter
     build-timeout
@@ -78,13 +78,13 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 6. Create a containerfile:
 
-    ```
+    ```bash
     touch jenkins-auto.containerfile
     ```
 
 7. Using an editor of your choice, open the `jenkins-auto.containerfile` and add the following code:
 
-    ```
+    ```makefile
     FROM jenkins/jenkins:almalinux
     USER root
 
@@ -122,7 +122,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     > **NOTE** - Podman uses `/var/tmp` by default to download and build images. If a `No space left on device` error appears during the build, you can change the `image_copy_tmp_dir` setting in the `containers.conf` file, usually located in `/usr/share/containers/containers.conf`.
 
-    ```
+    ```bash
     # Optional; remove final and intermediate images if they exist
     sudo podman rmi jenkins_node_image --force
     sudo podman image prune --all --force
@@ -132,13 +132,13 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 9. Once complete, look at your image's information:
 
-    ```
+    ```bash
     sudo podman images
     ```
 
     **Output (other images may also appear):**
 
-    ```
+    ```bash
     REPOSITORY                    TAG         IMAGE ID      CREATED             SIZE
     localhost/jenkins_node_image  latest      73536a580d6f  About a minute ago  902 MB
     docker.io/library/almalinux   8           4e97feadb276  6 weeks ago         204 MB
@@ -149,7 +149,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 10. Using the new image, create an SVN node and attach it to the network:
 
-     ```
+     ```bash
      # Optional; stop and remove the node if it exists
      sudo podman stop jenkins_node
      sudo podman rm jenkins_node
@@ -159,13 +159,13 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 11. Look at the containers:
 
-     ```
+     ```bash
      sudo podman ps --all
      ```
 
      **Output (other nodes may also appear):**
 
-     ```
+     ```bash
      CONTAINER ID  IMAGE                                COMMAND     CREATED             STATUS              PORTS       NAMES
      e01d98f007f5  localhost/jenkins_node_image:latest  /sbin/init  About a minute ago  Up About a minute               jenkins_node
      ...
@@ -173,7 +173,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 12. Check the IPv4 addresses of the node; it should be `192.168.168.20`:
 
-     ```
+     ```bash
      sudo podman inspect jenkins_node -f '{{ .NetworkSettings.Networks.devnet.IPAddress }}'
      ```
 
@@ -185,7 +185,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 2. Open a browser and navigate to the IPv4 address of the Jenkins server:
 
-    ```
+    ```bash
     firefox 192.168.168.20:8080
     ```
 

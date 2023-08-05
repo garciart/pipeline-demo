@@ -27,5 +27,8 @@ RUN echo Change.Me.321 | passwd root --stdin
 # Install Python for Flask demo
 RUN yum -y install python39
 
+# Ensure the system is still up-to-date
+RUN yum -y update
+
 # Allow traffic through port 8080 (Jenkins)
 EXPOSE 8080

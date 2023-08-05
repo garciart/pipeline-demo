@@ -56,7 +56,7 @@ Once you have set up Jenkins, return here and continue the tutorial.
 
 5. Scroll down to the **Pipeline** section and enter the following script:
 
-    ```Groovy
+    ```groovy
     pipeline {
         agent any
 
@@ -164,7 +164,7 @@ Once you have set up Jenkins, return here and continue the tutorial.
 
 14. Using an editor of your choice, open the Jenkinsfile and add the following code:
 
-    ```bash
+    ```groovy
     pipeline {
         agent any
 

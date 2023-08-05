@@ -17,13 +17,13 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 2. Create a containerfile:
 
-    ```
+    ```bash
     touch jenkins-manual.containerfile
     ```
 
 3. Using an editor of your choice, open the `jenkins-manual.containerfile` and add the following code:
 
-    ```
+    ```makefile
     # Pull a Docker or Podman image. For this demo, you will use AlmaLinux 8
     FROM almalinux:8
 
@@ -70,7 +70,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     RUN echo "export VISIBLE=now" >> /etc/profile
 
     # Install Java and fontconfig
-    RUN yum -y install java-11-openjdk-devel fontconfig
+    RUN yum -y install java-11-openjdk-devel java-17-openjdk-devel fontconfig
 
     # Install the wget tool to fetch the Jenkins repository:
     RUN yum -y install wget
@@ -101,7 +101,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     > **NOTE** - Podman uses `/var/tmp` by default to download and build images. If a `No space left on device` error appears during the build, you can change the `image_copy_tmp_dir` setting in the `containers.conf` file, usually located in `/usr/share/containers/containers.conf`.
 
-    ```
+    ```bash
     # Optional; remove final and intermediate images if they exist
     sudo podman rmi jenkins_node_image --force
     sudo podman image prune --all --force
@@ -111,13 +111,13 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 5. Once complete, look at your image's information:
 
-    ```
+    ```bash
     sudo podman images
     ```
 
     **Output (other images may also appear):**
 
-    ```
+    ```bash
     REPOSITORY                    TAG         IMAGE ID      CREATED             SIZE
     localhost/jenkins_node_image  latest      73536a580d6f  About a minute ago  902 MB
     docker.io/library/almalinux   8           4e97feadb276  6 weeks ago         204 MB
@@ -128,7 +128,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 6. Using the new image, create an SVN node and attach it to the network:
 
-    ```
+    ```bash
     # Optional; stop and remove the node if it exists
     sudo podman stop jenkins_node
     sudo podman rm jenkins_node
@@ -138,13 +138,13 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 7. Look at the containers:
 
-    ```
+    ```bash
     sudo podman ps --all
     ```
 
     **Output (other nodes may also appear):**
 
-    ```
+    ```bash
     CONTAINER ID  IMAGE                                COMMAND     CREATED             STATUS              PORTS       NAMES
     e01d98f007f5  localhost/jenkins_node_image:latest  /sbin/init  About a minute ago  Up About a minute               jenkins_node
     ...
@@ -152,7 +152,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 8. Check the IPv4 addresses of the node; it should be `192.168.168.20`:
 
-    ```
+    ```bash
     sudo podman inspect jenkins_node -f '{{ .NetworkSettings.Networks.devnet.IPAddress }}'
     ```
 
@@ -164,7 +164,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 2. Open a browser and navigate to the IPv4 address of the Jenkins server:
 
-    ```
+    ```bash
     firefox 192.168.168.20:8080
     ```
 
@@ -176,13 +176,13 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     - Using `podman exec`:
 
-        ```
+        ```bash
         sudo podman exec jenkins_node cat /var/lib/jenkins/secrets/initialAdminPassword
         ```
 
     - Using SSH as `root`; enter ***"Change.Me.321"*** when prompted for a password:
 
-        ```
+        ```bash
         ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@192.168.168.20
         java -jar /usr/share/java/jenkins.war --version
         cat /var/lib/jenkins/secrets/initialAdminPassword
@@ -233,7 +233,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     ![Jenkins Plugins Page](13-jenkins-plugins-page.png "Jenkins Plugins Page")
 
-14. Click on **Available Plugins** or navigate to http://192.168.168.20:80808/manage/pluginManager/available. A list of available plugins should appear. Enter `subversion` in the search box; the **Subversion** plugin should appear at the top of the list. Check the **Install** box next to the plugin:
+14. Click on **Available Plugins** or navigate to <http://192.168.168.20:80808/manage/pluginManager/available>. A list of available plugins should appear. Enter `subversion` in the search box; the **Subversion** plugin should appear at the top of the list. Check the **Install** box next to the plugin:
 
     ![Jenkins SVN Plugin Search Results](14-jenkins-svn-plugin-search-results.png "Jenkins SVN Plugin Search Results")
 

@@ -44,7 +44,7 @@ ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
 # Install Java and fontconfig
-RUN yum -y install java-11-openjdk-devel fontconfig
+RUN yum -y install java-11-openjdk-devel java-17-openjdk-devel fontconfig
 
 # Install the wget tool to fetch the Jenkins repository:
 RUN yum -y install wget
@@ -65,6 +65,9 @@ RUN yum -y install python39
 
 # Allow traffic through ports 22 (SSH), 80 (HTTP), and 8080 (Jenkins)
 EXPOSE 22 80 8080
+
+# Ensure the system is still up-to-date
+RUN yum -y update
 
 # Start the systemd service
 # https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html/managing_containers/running_containers_as_systemd_services_with_podman#starting_services_within_a_container_using_systemd
