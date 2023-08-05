@@ -1,3 +1,13 @@
+#!/usr/bin/bash
+sudo systemctl start podman
+sudo systemctl enable podman
+# Optional; remove the network if it already exists
+sudo podman network rm --force devnet
+# Create the container network
+sudo podman network create --driver bridge --subnet 192.168.168.0/24 --gateway 192.168.168.1 devnet
+sudo podman network ls | grep devnet && sudo podman inspect devnet
+touch managed_node.containerfile
+cat <<EOF > managed_node.containerfile
 # Pull a Docker or Podman image. For this demo, you will use AlmaLinux 8
 FROM almalinux:8
 
@@ -52,3 +62,4 @@ RUN yum -y update
 # Start the systemd service
 # https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html/managing_containers/running_containers_as_systemd_services_with_podman#starting_services_within_a_container_using_systemd
 CMD [ "/sbin/init" ]
+EOF

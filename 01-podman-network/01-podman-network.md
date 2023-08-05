@@ -16,7 +16,7 @@ In this tutorial, you will create a simple network of containers. Each container
 
 -----
 
-## Environment:
+## Environment
 
 - A development host, running a Fedora distribution later than 28 (e.g., Red Hat Linux 8, etc.), with a web browser (e.g., Mozilla Firefox); the latest version of Podman compatible with your system; and Python 3.9 or later.
 - If you are using Red Hat, you will need a subscription to Red Hat to update your system and access packages. Red Hat offers a free [Red Hat Developer Subscription for Individuals](https://developers.redhat.com/).
@@ -31,16 +31,16 @@ Podman supports ["rootful" (system) and "rootless" (user) modes](https://develop
 
 1. Open a Terminal and start the Podman service:
 
-    ```
+    ```bash
     sudo systemctl start podman
     ```
 
    > **NOTE** - Enable the podman service if you want it to automatically start when your host boots
    up:
    >
+   > ```bash
+   > sudo systemctl enable podman
    > ```
-    > sudo systemctl enable podman
-    > ```
 
 -----
 
@@ -50,7 +50,7 @@ Podman supports ["rootful" (system) and "rootless" (user) modes](https://develop
 
 2. Create a container network named `devnet`:
 
-    ```
+    ```bash
     # Optional; remove the network if it already exists
     sudo podman network rm --force devnet
     # Create the container network
@@ -59,13 +59,13 @@ Podman supports ["rootful" (system) and "rootless" (user) modes](https://develop
 
 3. Check your work:
 
-    ```
+    ```bash
     sudo podman network ls | grep devnet && sudo podman inspect devnet
     ```
 
    **Output:**
 
-    ```
+    ```bash
     db9c2f3d9431  devnet      bridge
     [
          {
@@ -100,13 +100,13 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 2. Create a containerfile:
 
-    ```
+    ```bash
     touch managed_node.containerfile
     ```
 
 3. Using an editor of your choice, open `managed_node.containerfile` and add the following code:
 
-    ```
+    ```text
     # Pull a Docker or Podman image. For this demo, you will use AlmaLinux 8
     FROM almalinux:8
 
@@ -120,7 +120,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     RUN yum -y install passwd
 
     # Create a non-root user and create a root password
-    # useradd  --comment "Default User Accoun" --create-home -groups wheel user
+    # useradd  --comment "Default User Account" --create-home -groups wheel user
     RUN useradd -c "Default User Account" -m -G wheel user &&\
         echo Change.Me.123 | passwd user --stdin &&\
         echo Change.Me.321 | passwd root --stdin
@@ -164,7 +164,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
    > **NOTE** - Podman uses `/var/tmp` by default to download and build images. If a `No space left on device` error appears during the build, you can change the `image_copy_tmp_dir` setting in the `containers.conf` file, usually located in `/usr/share/containers/containers.conf`.
 
-    ```
+    ```bash
     # Optional; remove final and intermediate images if they exist
     sudo podman rmi managed_node_image --force
     sudo podman image prune --all --force
@@ -174,13 +174,13 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 5. Once complete, look at your image's information:
 
-    ```
+    ```bash
     sudo podman images
     ```
 
    **Output (other images may also appear):**
 
-    ```
+    ```bash
     REPOSITORY                    TAG         IMAGE ID      CREATED             SIZE
     localhost/managed_node_image  latest      b56dd8d6ac97  About a minute ago  408 MB
     docker.io/library/almalinux   8           4e97feadb276  6 weeks ago         204 MB
@@ -191,7 +191,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 6. Using the new image, create two managed nodes and attach them to the network:
 
-    ```
+    ```bash
     # Optional; stop and remove the nodes if they exist
     sudo podman stop managed_node1
     sudo podman rm managed_node1
@@ -204,13 +204,13 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 7. Look at the containers:
 
-    ```
+    ```bash
     sudo podman ps --all
     ```
 
    **Output (other nodes may also appear):**
 
-    ```
+    ```bash
     CONTAINER ID  IMAGE                                COMMAND     CREATED            STATUS                     PORTS       NAMES
     52d0c44c6b0b  localhost/managed_node_image:latest  /sbin/init  5 minutes ago  Up 5 minutes                               managed_node1
     46781391b155  localhost/managed_node_image:latest  /sbin/init  5 minutes ago  Up 5 minutes                               managed_node2
@@ -220,7 +220,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 8. Check the IPv4 addresses of the nodes; they should be `192.168.168.101` and `192.168.168.102`,
    respectively:
 
-    ```
+    ```bash
     sudo podman inspect managed_node1 -f '{{ .NetworkSettings.Networks.devnet.IPAddress }}'
     sudo podman inspect managed_node2 -f '{{ .NetworkSettings.Networks.devnet.IPAddress }}'
     ```
@@ -233,7 +233,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 2. Ping the nodes from the development host; if you are unable to establish connectivity, repeat the steps in [Create and Add the Containers to the Network](#create-and-add-the-containers-to-the-network):
 
-    ```
+    ```bash
     ping -c 2 192.168.168.101
     ping -c 2 192.168.168.102
     ```
@@ -242,25 +242,25 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
    > **NOTE** - Since you are running a process in the container, and not a shell, you cannot use `sudo podman attach managed_node1`.
 
-    ```
+    ```bash
     sudo podman exec -it managed_node1 /usr/bin/bash
     ```
 
    **Output:**
 
-    ```
+    ```bash
     [root@f55ec8748738 /]#
     ```
 
 4. Ping the second container (managed_node2) from managed_node1:
 
-    ```
+    ```bash
     ping -c 2 192.168.168.102
     ```
 
    **Output:**
 
-    ```
+    ```bash
     PING 192.168.168.102 (192.168.168.102) 56(84) bytes of data.
     64 bytes from 192.168.168.102: icmp_seq=1 ttl=64 time=0.047 ms
     64 bytes from 192.168.168.102: icmp_seq=2 ttl=64 time=0.067 ms
@@ -272,7 +272,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 5. Log out when finished:
 
-    ```
+    ```bash
     exit
     ```
 
@@ -284,21 +284,22 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 ## Access the Containers through SSH
 
-> **NOTE** - Ensure you have installed the OpenSSH client on the development host: `sudo yum -y install openssh openssh-askpass openssh-clients`
-
-> **NOTE** - Ensure you have installed the sshpass utility on the development host: `python3 -m pip install sshpass`
+> **NOTE** -
+>
+> - Ensure you have installed the OpenSSH client on the development host: `sudo yum -y install openssh openssh-askpass openssh-clients`
+> - Ensure you have installed the sshpass utility on the development host: `python3 -m pip install sshpass`
 
 1. Open a Terminal, if one is not already open.
 
 2. Access the first container (`192.168.168.101`), using SSH as `root`; enter `Change.Me.321` when prompted for a password:
 
-    ```
+    ```bash
     ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@192.168.168.101
     ```
 
    **Output:**
 
-    ```
+    ```bash
     Warning: Permanently added '192.168.168.101' (ECDSA) to the list of known hosts.
     root@192.168.168.101's password: 
     [root@15316195c9f0 ~]# 
@@ -306,7 +307,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     > **NOTE** - If you receive the following warning:
     >
-    > ```
+    > ```bash
     > @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     > @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
     > @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -315,19 +316,19 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     >
     > ...run the following command to remove the container's IPv4 address from your `~/.ssh/known_hosts` file:
     >
-    > ```
+    > ```bash
     > ssh-keygen -R 192.168.168.101
     > ```
 
 3. Ping the second container (managed_node2) from managed_node1:
 
-    ```
+    ```bash
     ping -c 2 192.168.168.102
     ```
 
    **Output:**
 
-    ```
+    ```bash
     PING 192.168.168.102 (192.168.168.102) 56(84) bytes of data.
     64 bytes from 192.168.168.102: icmp_seq=1 ttl=64 time=0.047 ms
     64 bytes from 192.168.168.102: icmp_seq=2 ttl=64 time=0.067 ms
@@ -339,19 +340,19 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 4. Log out when finished:
 
-    ```
+    ```bash
     logout
     ```
 
 5. Access the first container (`192.168.168.101`), using SSH as `user`; enter `Change.Me.123` when prompted for a password:
 
-    ```
+    ```bash
     ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null user@192.168.168.101
     ```
 
    **Output:**
 
-    ```
+    ```bash
     Warning: Permanently added '192.168.168.101' (ECDSA) to the list of known hosts.
     user@192.168.168.101's password: 
     [user@15316195c9f0 ~]$ 
@@ -359,13 +360,13 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 6. Ping the second container (managed_node2) from managed_node1; enter `Change.Me.123` when prompted for a password:
 
-    ```
+    ```bash
     sudo ping -c 2 192.168.168.102
     ```
 
    **Output:**
 
-    ```
+    ```bash
     PING 192.168.168.102 (192.168.168.102) 56(84) bytes of data.
     64 bytes from 192.168.168.102: icmp_seq=1 ttl=64 time=0.047 ms
     64 bytes from 192.168.168.102: icmp_seq=2 ttl=64 time=0.067 ms
@@ -377,7 +378,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 7. Log out when finished:
 
-    ```
+    ```bash
     logout
     ```
 
@@ -391,7 +392,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 2. Open a browser and navigate to the IPv4 address of the first node:
 
-    ```
+    ```bash
     firefox 192.168.168.101:80
     ```
 
@@ -401,19 +402,19 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 4. If you open a browser and navigate to the IPv4 address of the second node, the Apache HTTP Server Test Page should also appear:
 
-    ```
+    ```bash
     firefox 192.168.168.102:80
     ```
 
 5. Create a webpage:
 
-    ```
+    ```bash
     touch one.html
     ```
 
 6. Using an editor of your choice, add the following code to `one.html`:
 
-    ```
+    ```html
     <!DOCTYPE HTML>
     <html lang="en">
     <head>
@@ -430,13 +431,13 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 7. Copy the web page to the Apache document root path; enter `Change.Me.321` when prompted for a password:
 
-    ```
+    ```bash
     scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null one.html root@192.168.168.101:/var/www/html/index.html
     ```
 
 8. If your browser is still open at `192.168.168.101:80`, refresh the page. If not, reopen a browser and navigate to the IPv4 address of the first node:
 
-    ```
+    ```bash
     firefox 192.168.168.101:80
     ```
 
@@ -454,13 +455,13 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 2. To stop a container without deleting it:
 
-    ```
+    ```bash
     sudo podman stop managed_node1
     ```
 
 3. To restart the container:
 
-    ```
+    ```bash
     sudo podman start managed_node1
     ```
 

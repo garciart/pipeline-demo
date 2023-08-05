@@ -1,6 +1,6 @@
 # Subversion Container Demo
 
-In this tutorial, you will run Apache Subversion, known as SVN, in a container, to act as a software versioning and revision control server. You will also create a *volume* to store repository data; if the container fails, your repository is not lost.
+In this tutorial, you will run Apache Subversion, known as SVN, in a container, to act as a software versioning and revision control server. You will also create a *volume* to store repository data; if the container fails, your repository will not be not lost.
 
 - [Getting Started](#getting-started)
 - [Create and Add the Subversion Server Container to the Network](#create-and-add-the-subversion-server-container-to-the-network)
@@ -33,13 +33,13 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 2. Create a Subversion configuration file:
 
-    ```
+    ```bash
     touch subversion.conf
     ```
 
 3. Using an editor of your choice, open `subversion.conf` and add the following text:
 
-    ```
+    ```apacheconf
     <Location /svn>
         DAV svn
         SVNParentPath /var/www/svn/
@@ -52,7 +52,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 4. Storing data in a container is not a good idea; if the container stops working, you will lose all of your data. A better option is to use a **volume**; it uses persistent storage on your development host; it can be backed up; and it can be shared with other containers. Create and inspect a volume now:
 
-    ```
+    ```bash
     # Optional; remove old volumes if they exist
     sudo podman volume prune --force
     sudo podman volume rm svn-root --force
@@ -63,7 +63,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     **Output:**
 
-    ```
+    ```json
     [
         {
             "Name": "svn-root",
@@ -84,13 +84,13 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 5. Create a containerfile:
 
-    ```
+    ```bash
     touch svn.containerfile
     ```
 
 6. Using an editor of your choice, open `svn.containerfile` and add the following code:
 
-    ```
+    ```makefile
     # Pull a Docker or Podman image. For this demo, you will use AlmaLinux 8
     FROM almalinux:8
 
@@ -183,7 +183,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     > **NOTE** - Podman uses `/var/tmp` by default to download and build images. If a `No space left on device` error appears during the build, you can change the `image_copy_tmp_dir` setting in the `containers.conf` file, usually located in `/usr/share/containers/containers.conf`.
 
-    ```
+    ```bash
     # Optional; remove final and intermediate images if they exist
     sudo podman rmi svn_node_image --force
     sudo podman image prune --all --force
@@ -193,13 +193,13 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 8. Once complete, look at your image's information:
 
-    ```
+    ```bash
     sudo podman images
     ```
 
     **Output (other images may also appear):**
 
-    ```
+    ```bash
     REPOSITORY                    TAG         IMAGE ID      CREATED             SIZE
     localhost/svn_node_image      latest      ba37891ab764  About a minute ago  434 MB
     docker.io/library/almalinux   8           4e97feadb276  6 weeks ago         204 MB
@@ -210,7 +210,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 9. Using the new image, create an SVN node and attach it to the volume and the network:
 
-    ```
+    ```bash
     # Optional; stop and remove the node if it exists
     sudo podman stop svn_node
     sudo podman rm svn_node
@@ -220,13 +220,13 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 10. Look at the containers:
 
-    ```
+    ```bash
     sudo podman ps --all
     ```
 
     **Output (other nodes may also appear):**
 
-    ```
+    ```bash
     CONTAINER ID  IMAGE                                COMMAND     CREATED             STATUS              PORTS       NAMES
     a60d468d104c  localhost/svn_node_image:latest      /sbin/init  About a minute ago  Up About a minute               svn_node
     ...
@@ -234,7 +234,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 11. Check the IPv4 addresses of the node; it should be `192.168.168.10`:
 
-    ```
+    ```bash
     sudo podman inspect svn_node -f '{{ .NetworkSettings.Networks.devnet.IPAddress }}'
     ```
 
@@ -246,7 +246,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 2. Open a browser and navigate to the IPv4 address of the repository:
 
-    ```
+    ```bash
     firefox 192.168.168.10/svn/demorepo
     ```
 
@@ -270,20 +270,20 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 2. Checkout the repository:
 
-    ```
+    ```bash
     svn checkout http://192.168.168.10/svn/demorepo/
     ```
 
 3. If prompted for your sudo credentials, enter your password:
 
-    ```
+    ```bash
     Authentication realm: <http://192.168.168.10:80> SVN Repository
     Password for '<your username>': *************
     ```
 
 4. When prompted for the repository credentials, enter `svnuser` for the username and `Change.Me.123` for the password:
 
-    ```
+    ```bash
     Authentication realm: <http://192.168.168.10:80> SVN Repository
     Username: svnuser
     Password for 'svnuser': *************
@@ -291,7 +291,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 5. When asked if you would like to store your password unencrypted, enter `no`:
 
-    ```
+    ```bash
     -----------------------------------------------------------------------
     ATTENTION!  Your password for authentication realm:
 
@@ -311,10 +311,11 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 6. Using an editor of your choice, open your local `.subversion/servers` (e.g., `~/.subversion/servers` or `/home/<your username>/.subversion/servers`) and, in the **`[global]`** section near the bottom of the file, uncomment and set the value of the 'store-plaintext-passwords' option to `no`:
 
-    ```
+    ```ini
     [global]
     ...
     # Password / passphrase caching parameters:
+    store-passwords = yes
     ...
     store-plaintext-passwords = no
     ...
@@ -322,7 +323,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 7. Navigate to the repository directory and take a look at its contents:
 
-    ```
+    ```bash
     cd demorepo
     ls
     ```
@@ -337,31 +338,31 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 2. Ensure you are in the `demorepo` directory:
 
-    ```
+    ```bash
     cd demorepo
     ```
 
-3.  Ensure your local repository is up-to-date with the remote repository. When prompted for the repository password, enter `Change.Me.123`:
+3. Ensure your local repository is up-to-date with the remote repository. When prompted for the repository password, enter `Change.Me.123`:
 
-    ```
+    ```bash
     svn update
     ```
 
 4. Create a README markdown file:
 
-    ```
+    ```bash
     echo -e "# Pipeline Demo\n\nThis is a demo.\n" > README.md
     ```
 
 5. Add `README.md` to your local repository:
 
-    ```
+    ```bash
     svn add README.md
     ```
 
     **Output:**
 
-    ```
+    ```bash
     A         README.md
     ```
 
@@ -369,13 +370,13 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 6. Push your changes to the remote repository. When prompted for the repository password, enter `Change.Me.123`:
 
-    ```
+    ```bash
     svn commit -m "Initial commit."
     ```
 
     **Output:**
 
-    ```
+    ```bash
     Authentication realm: <http://192.168.168.10:80> SVN Repository
     Password for 'svnuser': *************
 
@@ -387,7 +388,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 7. Open a browser, if one is not already open. Either refresh the repository page or navigate to the IPv4 address of the repository:
 
-    ```
+    ```bash
     firefox 192.168.168.10/svn/demorepo
     ```
 
@@ -399,26 +400,26 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 10. Return to the Terminal and look at the commit in the volume's mountpoint, using the **svnlook** command:
 
-    ```
+    ```bash
     sudo svnlook info /var/lib/containers/storage/volumes/svn-root/_data/demorepo
     ```
 
     **Output:**
 
-    ```
+    ```bash
     svnuser
     2023-07-16 22:33:26 -0400 (Sun, 16 Jul 2023)
     15
     Initial commit.
     ```
 
-    ```
+    ```bash
     sudo svnlook tree /var/lib/containers/storage/volumes/svn-root/_data/demorepo
     ```
 
     **Output:**
 
-    ```
+    ```bash
     /
     README.md
     ```
