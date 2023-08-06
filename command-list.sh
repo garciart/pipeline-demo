@@ -1,4 +1,28 @@
 #!/usr/bin/bash
+# My prep work
+sudo dnf -y update
+sudo dnf -y upgrade
+sudo dnf -y clean all
+sudo dnf -y autoremove
+sudo subscription-manager repos --enable codeready-builder-for-rhel-8-$(arch)-rpms
+sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+sudo dnf -y install epel-release
+sudo dnf -y install make gcc kernel-headers kernel-devel perl dkms bzip2
+sudo dnf -y install git sshpass
+sudo dnf -y isntall gnome-tweaks
+sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
+sudo dnf check-update
+sudo dnf install code
+sudo dnf -y install cockpit
+sudo systemctl enable --now cockpit.socket
+sudo firewall-cmd --add-service=cockpit --permanent
+sudo firewall-cmd --reload
+mkdir Workspace
+cd Workspace/
+git clone https://github.com/garciart/pipeline-demo.git
+sudo shutdown -r now
+
 # Part 1: Create the Podman network
 sudo systemctl start podman
 sudo systemctl enable podman
