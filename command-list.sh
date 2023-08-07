@@ -578,3 +578,7 @@ flask --app app run
 
 cd ..
 
+
+# Notes:
+# To reset the build numbers in Jenkins:
+# Jenkins.instance.getItemByFullName("pipeline-demo").updateNextBuildNumber(2)
