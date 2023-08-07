@@ -101,6 +101,8 @@ Ensure you have completed the steps in the [Jenkins Container Demo](/03-jenkins-
     c510534c3a1c3a6f015bcfdd0da8b29eb1fecde01d4ce43435a59d14d25e3980  data.csv
     ```
 
+    > **NOTE** - If you added a carriage return to the end of the file, your result may be different (e.g, `bc1932ebf66ff108fb5ff0a6769f2023a9002c7dafee53d85f14c63cab428b4a`).
+
 4. Create a simple Flask application to read the data:
 
    ```

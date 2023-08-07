@@ -216,7 +216,7 @@ Once you have set up Jenkins, return here and continue the tutorial.
 
 18. Now that there is a Jenkinsfile in the repository, Jenkins will run it every time there is a change in the repository. You can use the Jenkinsfile to run tests, scans, and to deploy code to a server.
 
-    > **NOTE** - If you want to rerun the Jenkinsfile, simply click **Build Now**.
+    > **NOTE** - If you want to re-run the Jenkinsfile, simply click **Build Now**.
 
 19. Click on the build (**#2**) under **Build History**. The build page should appear:
 

@@ -174,6 +174,9 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     # Allow traffic through ports 22 (SSH), 80 (HTTP), and SVN (3690)
     EXPOSE 22 80 3690
 
+    # Ensure the system is still up-to-date
+    RUN yum -y update
+
     # Start the systemd service
     # https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html/managing_containers/running_containers_as_systemd_services_with_podman#starting_services_within_a_container_using_systemd
     CMD [ "/sbin/init" ]
