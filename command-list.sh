@@ -4,7 +4,7 @@ sudo dnf -y update
 sudo dnf -y upgrade
 sudo dnf -y clean all
 sudo dnf -y autoremove
-sudo subscription-manager repos --enable codeready-builder-for-rhel-8-$(arch)-rpms
+sudo subscription-manager repos --enable codeready-builder-for-rhel-8-"$(arch)"-rpms
 sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 sudo dnf -y install epel-release
 sudo dnf -y install make gcc kernel-headers kernel-devel perl dkms bzip2
@@ -23,7 +23,7 @@ sudo systemctl enable --now cockpit.socket
 sudo firewall-cmd --add-service=cockpit --permanent
 sudo firewall-cmd --reload
 mkdir Workspace
-cd Workspace/
+cd Workspace/ || exit
 git clone https://github.com/garciart/pipeline-demo.git
 sudo shutdown -r now
 
@@ -297,20 +297,20 @@ firefox 192.168.168.10/svn/demorepo
 # Part 2b: Push to the repository
 sudo yum -y install subversion
 svn checkout http://192.168.168.10/svn/demorepo/
+
 sed -i --regexp-extended 's/^.{0,2}store-plaintext-passwords = no/store-plaintext-passwords = no/g' ~/.subversion/servers
 sed -i -E 's/^.{0,2}store-passwords = no/store-passwords = no/g' ~/.subversion/servers
-cd demorepo
+cd demorepo || exit
 svn update
 
 echo -e "# Pipeline Demo\n\nThis is a demo.\n" > README.md
 svn add README.md
-
 svn commit -m "Initial commit."
 
 sudo svnlook info /var/lib/containers/storage/volumes/svn-root/_data/demorepo
 sudo svnlook tree /var/lib/containers/storage/volumes/svn-root/_data/demorepo
 firefox 192.168.168.10/svn/demorepo
-cd ..
+cd .. || exit
 
 # Part 3: Create the Jenkins container
 touch jenkins-manual.containerfile
@@ -375,7 +375,7 @@ RUN wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/j
 RUN yum -y install jenkins
 
 # Enable Jenkins as a service
-RUN systemctl enable jenkins
+RUN systemctl enable jenkins # noqa
 
 # Install Python for Flask demo
 RUN yum -y install python39
@@ -403,6 +403,7 @@ sudo podman rm jenkins_node
 sudo podman run -dt --name jenkins_node --replace --restart=unless-stopped --net devnet --ip 192.168.168.20 --cap-add AUDIT_WRITE jenkins_node_image
 sudo podman ps --all
 sudo podman inspect jenkins_node -f '{{ .NetworkSettings.Networks.devnet.IPAddress }}'
+sleep 10
 firefox 192.168.168.20:8080
 sudo podman exec jenkins_node cat /var/lib/jenkins/secrets/initialAdminPassword
 
@@ -411,8 +412,9 @@ sudo podman exec jenkins_node cat /var/lib/jenkins/secrets/initialAdminPassword
 # cat /var/lib/jenkins/secrets/initialAdminPassword
 # logout
 
-cd demorepo
+cd demorepo || exit
 svn update
+
 touch Jenkinsfile
 cat <<EOF > Jenkinsfile
 pipeline {
@@ -447,13 +449,14 @@ pipeline {
 EOF
 svn add . --force
 svn commit -m "Added Jenkinsfile."
+
 cd ..
 
 
 # Part 4: Jenkins testing Stage
 python3 -m pip install --upgrade --user Flask
 python3 -m pip install --user xmlrunner
-cd demorepo
+cd ../demorepo || return
 svn update
 
 touch data.csv
