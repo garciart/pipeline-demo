@@ -62,6 +62,7 @@ RUN unzip sonar-scanner-cli-5.0.1.3006-linux.zip -d /opt
 # FYI: Unzip changes the name (removing the -cli part)
 RUN mv /opt/sonar-scanner-5.0.1.3006-linux /opt/sonar-scanner
 RUN rm -f sonar-scanner-cli-5.0.1.3006-linux.zip
+RUN export PATH=/opt/sonar-scanner/bin:$PATH
 
 # Create a SonarQube user
 # id -u sonarqube &>/dev/null || useradd --home-dir /opt/sonarqube/ --groups wheel --system sonarqube

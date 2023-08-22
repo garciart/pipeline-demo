@@ -1,6 +1,6 @@
 # SonarQube Container Demo
 
-In this tutorial, you will run a SonarQube server in a container and itegrate it with Jenkins to check code quality.
+In this tutorial, you will create a SonarQube container and integrate it into a Jenkins pipeline, allowing you to check code quality each time a change is pushed to the repository.
 
 - [Getting Started](#getting-started)
 - [Create and Add the SonarQube Server Container to the Network](#create-and-add-the-sonarqube-server-container-to-the-network)
@@ -13,7 +13,14 @@ In this tutorial, you will run a SonarQube server in a container and itegrate it
 
 ## Getting Started
 
-Ensure you have completed the steps in the [Pipeline Testing Stage Demo](/04-testing-stage/04-testing-stage.md).
+1. Ensure you have completed the steps in the [Pipeline Testing Stage Demo](/04-testing-stage/04-testing-stage.md).
+
+2. Ensure that the following containers are running:
+
+    - Subversion: `sudo podman start svn_node`
+    - Jenkins: `sudo podman start jenkins_node`
+
+3. Ensure that the **svn-root** volume exists: `sudo podman volume inspect svn-root`
 
 -----
 
@@ -135,6 +142,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     # FYI: Unzip changes the name (removing the -cli part)
     RUN mv /opt/sonar-scanner-5.0.1.3006-linux /opt/sonar-scanner
     RUN rm -f sonar-scanner-cli-5.0.1.3006-linux.zip
+    RUN export PATH=/opt/sonar-scanner/bin:$PATH
 
     # Create a SonarQube user
     # id -u sonarqube &>/dev/null || useradd --home-dir /opt/sonarqube/ --groups wheel --system sonarqube
@@ -223,6 +231,16 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     sudo podman inspect sonarqube_node -f '{{ .NetworkSettings.Networks.devnet.IPAddress }}'
     ``````
 
+    > **NOTE** - If you run into any issues, you can always access the container using one of the following commands:
+
+    ```bash
+    sudo podman exec -it sonarqube_node /usr/bin/bash
+    ```
+
+    ```bash
+    ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@192.168.168.30
+    ```
+
 -----
 
 ## Access and Setup SonarQube
@@ -249,10 +267,129 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     > **NOTE** - A warning appears at the bottom of the page, stating that, *"The embedded database should be used for evaluation purposes only."* By default, SonarQube uses a built-in H2 database. You can change the database to [a supported database, such as PostgreSQL, MS SQL Server, and Oracle/MySQL](https://docs.sonarsource.com/sonarqube/9.9/setup-and-upgrade/install-the-server/) if you like, but that is beyond the scope of this tutorial. Please note that the Community Edition does not support running SonarQube in a clustered configuration.
 
-6. Unfortunately, Subversion is not a supported DevOps platform.
+6. Unfortunately, Subversion is not a supported DevOps platform. Click on **Manually**, and the **Create a project** page should appear. Enter the following values, and then click on **Setup**:
+
+    - Project display name: pipeline-demo
+    - Project key: pipeline-demo
+    - Main branch name: main
+
+    ![Create a project](40-create-a-project.png "Create a project")
+
+7. A new page should appear, asking how do you want to analyze your repository. Even though you are going to use Jenkins, SonarQube does not support Subversion thorugh Jenkins, so click on **Locally**:
+
+    ![How do you want to analyze your repository?](41-how-do-you-want-to-analyze-your-repository.png "How do you want to analyze your repository?")
+
+8. The **Analyze your project** page should appear:
+
+    ![Analyze your project](42-analyze-your-project.png "Analyze your project")
+
+9. Leave the values as-is for now and click on **Generate**. A token should appear; make sure you record it somewhere, since you will need it later. Click on **Continue** when done:
+
+    ![Provide a token](43-provide-a-token.png "Provide a token")
+
+10. When the **Run analysis on your project** page appears, click on **Other (for JS, TS, Go, Python, PHP, ...)**
+
+    ![Run analysis on your project](44-run-analysis-on-your-project.png "Run analysis on your project")
+
+11. When asked for your operating system, select **Linux**:
+
+    ![What is your OS?](45-what-is-your-os.png "What is your OS?")
+
+12. A set of instructions will appear, explaining how to leverage SonarScanner to send its results to the SonarQube server. Click **Copy** and record the instructions:
+
+    ![Execute the Scanner](46-execute-the-scanner.png "Execute the Scanner")
+
+13. The good news is that you installed SonarScanner when you created the Subversion container, using the containerfile. Right now, if your Jenkins container is not open in a browser, open a Terminal (if one is not already open), and access your Jenkins container:
+
+    ```bash
+    firefox 192.168.168.20:8080
+    ```
+
+14. If you are not so already, log in, entering ***"jenkinsuser"*** for the username and ***"Change.Me.123"*** for the password. Click on **Manage Jenkins**, then **Plugins**. Click on **Available plugins**, and, in the text box, enter ***"sonarqube"***:
+
+    ![Available plugins](47-available-plugins.png "Available plugins")
+
+15. Select **SonarQube Scanner** and click on **Download now and install after restart**. The **Download progress** page should appear:
+
+    ![Download progress](48-download-progress.png "Download progress")
+
+16. Check the **Restart Jenkins when installation is complete and no jobs are running** box. When Jenkins restarts, log back in, and click on **Manage Jenkins**:
+
+    ![Manage Jenkins](49-manage-jenkins.png "Manage Jenkins")
+
+17. Click on **System** to open the System page. Scroll down to **SonarQube servers** and click on **Add SonarQube**:
+
+    ![SonarQube servers](50-sonarqube-servers.png "SonarQube servers")
+
+18. Enter the following information:
+
+    - **Name**: DemoRepoSonarQubeServer
+    - **Server URL**: <http://192.168.168.30:9000>
+    - **Server authentication token**:
+        - Click **Add**, then click on the **Jenkins Credentials Provider** button.
+        - When the Jenkins Credentials Provider screen appears, change the kind to **Secret Text**, enter your token in the **Secret** textbox:
+        - Enter ***"DemoRepoSonarQubeToken"*** in the **Description** textbox, then click on **Add**
+
+            ![Jenkins Credentials Provider for SonarQube](51-jenkins-credentials-provider-for-sonarqube.png "Jenkins Credentials Provider for SonarQube")
+
+        - Go back to the **Server authentication token** dropdown list and select the **DemoRepoSonarQubeToken**.
+
+19. Click on **Save** when finished to return to the Dashboard.
+
+20. Click on **Manage Jenkins**, then click on **Tools**. Scroll down to **SonarQube servers** and click on **Add SonarQube Scanner**:
+
+    ![SonarQube Scanner](52-sonarqube-scanner.png "SonarQube scanner")
+
+21. For **Name**, enter ***"DemoRepoSonarQubeScanner"***. Leave the default **Install from Maven Central** option as is, but record the version number (e.g., SonarQube Scanner 5.0.1.3006); you will need it later. Click **Save** when done.
+
+22. Open your Jenkinsfile. Add the following stage after the **test** stage, using the code snippet provided by SonarQube earlier, along with your Subversion credentials:
+
+    ```groovy
+    stage('SonarQube Analysis') {
+        environment {
+            SCANNER_HOME = tool 'DemoRepoSonarQubeScanner'
+            PROJECT_NAME = "pipeline-demo"
+        }
+        steps {
+            withSonarQubeEnv('DemoRepoSonarQubeServer') {
+                sh '''$SCANNER_HOME/bin/sonar-scanner \
+                -Dsonar.projectKey=pipeline-demo \
+                -Dsonar.sources=. \
+                -Dsonar.host.url=http://192.168.168.30:9000 \
+                -Dsonar.token=sqp_4e4787c0fb81f468aa798896c332c7db2a71004b \
+                -Dsonar.scm.provider=svn \
+                -Dsonar.svn.username=svnuser \
+                -Dsonar.svn.password.secured=Change.Me.123'''
+            }
+        }
+    }
+    ```
+
+23. Push your changes to the remote repository. When prompted for the repository password, enter ***"Change.Me.123"***:
+
+    ```bash
+    svn add Jenkinsfile
+    svn commit -m "Added SonarQube analysis stage."
+    ```
+
+24. Go back to Jenkins, wait two minutes for Jenkins to contact the SVN server, then refresh the page. Another build should appear under **Build History**, along with the **Stage View***:
+
+    > **NOTE** - If refresh does not work, click on **Build Now**.
+
+25. Click on the build (**#4**) under **Build History**. The build page should appear:
+
+    ![Jenkins Build Page 4](53-jenkins-build-page-4.png "Jenkins Build Page 4")
+
+26. On the **Build** page, click on the **Console Output** link. Look through the output until you come across a line that looks similar to "INFO: ANALYSIS SUCCESSFUL, you can find the results at: http://192.168.168.30:9000/dashboard?id=pipeline-demo":
+
+    ![Jenkins Console Output 4](54-jenkins-console-output-4.png "Jenkins Console Output 4")
+
+27. If you click on the link (or open it in a new tab), the results of your scan will appear:
+
+    ![SonarQube Results 1](55-sonarQube-results-1.png "SonarQube Results 1")
 
 -----
 
 ## Summary
 
-In this tutorial, you ran a Sonarqube... Remember, this is only a proof-of-concept demo for a single user; you should not use it for production.
+In this tutorial, you created a SonarQube container and integrated it into a Jenkins pipeline, allowing you to check code quality each time a change is pushed to the repository. Remember, this is only a proof-of-concept demo for a single user; you should not use it for production.

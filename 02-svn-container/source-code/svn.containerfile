@@ -81,17 +81,18 @@ RUN yum -y install java-17-openjdk-devel
 # Ensure wget and unzip are installed
 RUN yum -y install wget && yum -y install unzip
 
-# Download and extract Sonar Scanner
+# Download and extract SonarScanner
 RUN mkdir --parents /opt
 RUN wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
 RUN unzip sonar-scanner-cli-5.0.1.3006-linux.zip -d /opt
 # FYI: Unzip changes the name (removing the -cli part)
 RUN mv /opt/sonar-scanner-5.0.1.3006-linux /opt/sonar-scanner
 RUN rm -f sonar-scanner-cli-5.0.1.3006-linux.zip
+RUN export PATH=/opt/sonar-scanner/bin:$PATH
 
 # Create a SonarQube user
 # id -u sonarqube &>/dev/null || useradd --home-dir /opt/sonar-scanner --groups wheel --system sonarqube
-RUN useradd -c "Sonar Scanner Account" -d /opt/sonar-scanner -G wheel -r sonarqube &&\
+RUN useradd -c "SonarScanner Account" -d /opt/sonar-scanner -G wheel -r sonarqube &&\
     echo Change.Me.123 | passwd sonarqube --stdin &&\
     chown -R sonarqube:sonarqube /opt/sonar-scanner &&\
     chmod 775 -R /opt/sonar-scanner

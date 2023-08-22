@@ -114,7 +114,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     # Install Python for Flask demo
     RUN yum -y install python39
 
-    # Install Java, fontconfig and Node.js (for Sonar Scanner)
+    # Install Java, fontconfig and Node.js (for SonarScanner)
     RUN yum -y install java-17-openjdk-devel fontconfig
     RUN yum -y install nodejs
     RUN npm cache clean -f &&\

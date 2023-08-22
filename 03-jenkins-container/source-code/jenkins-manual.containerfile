@@ -43,7 +43,7 @@ RUN rm /run/nologin || :
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
-# Install Java, fontconfig and Node.js (for Sonar Scanner)
+# Install Java, fontconfig and Node.js (for SonarScanner)
 RUN yum -y install java-17-openjdk-devel fontconfig
 RUN yum -y install nodejs
 RUN npm cache clean -f &&\

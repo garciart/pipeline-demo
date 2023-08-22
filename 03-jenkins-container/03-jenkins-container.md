@@ -14,7 +14,13 @@ In this tutorial, you will run a Jenkins automation server in a container, to ma
 
 ## Getting Started
 
-Ensure you have completed the steps in the [Subversion Container Demo](/02-svn-container/02-svn-container.md).
+1. Ensure you have completed the steps in the [Subversion Container Demo](/02-svn-container/02-svn-container.md).
+
+2. Ensure that the following containers are running:
+
+    - Subversion: `sudo podman start svn_node`
+
+3. Ensure that the **svn-root** volume exists: `sudo podman volume inspect svn-root`
 
 -----
 

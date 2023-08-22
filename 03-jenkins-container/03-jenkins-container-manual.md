@@ -69,7 +69,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     ENV NOTVISIBLE "in users profile"
     RUN echo "export VISIBLE=now" >> /etc/profile
 
-    # Install Java, fontconfig and Node.js (for Sonar Scanner)
+    # Install Java, fontconfig and Node.js (for SonarScanner)
     RUN yum -y install java-17-openjdk-devel fontconfig
     RUN yum -y install nodejs
     RUN npm cache clean -f &&\
@@ -161,6 +161,16 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     ```bash
     sudo podman inspect jenkins_node -f '{{ .NetworkSettings.Networks.devnet.IPAddress }}'
+    ```
+
+    > **NOTE** - If you run into any issues, you can always access the container using one of the following commands:
+
+    ```bash
+    sudo podman exec -it jenkins_node /usr/bin/bash
+    ```
+
+    ```bash
+    ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@192.168.168.20
     ```
 
 -----

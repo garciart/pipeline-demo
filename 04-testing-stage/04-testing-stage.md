@@ -14,7 +14,14 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
 
 ## Getting Started
 
-Ensure you have completed the steps in the [Jenkins Container Demo](/03-jenkins-container/03-jenkins-container.md).
+1. Ensure you have completed the steps in the [Jenkins Container Demo](/03-jenkins-container/03-jenkins-container.md).
+
+2. Ensure that the following containers are running:
+
+    - Subversion: `sudo podman start svn_node`
+    - Jenkins: `sudo podman start jenkins_node`
+
+3. Ensure that the **svn-root** volume exists: `sudo podman volume inspect svn-root`
 
 -----
 
