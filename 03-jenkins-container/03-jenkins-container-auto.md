@@ -82,7 +82,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     touch jenkins-auto.containerfile
     ```
 
-7. Using an editor of your choice, open the `jenkins-auto.containerfile` and add the following code:
+7. Using an editor of your choice, open `jenkins-auto.containerfile` and add the following code:
 
     ```dockerfile
     FROM jenkins/jenkins:almalinux

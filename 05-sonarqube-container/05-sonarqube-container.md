@@ -1,6 +1,6 @@
 # SonarQube Container Demo
 
-In this tutorial, you will run a SonarQube server in a container and itegrate it with Jenkins, to check code quality.
+In this tutorial, you will run a SonarQube server in a container and itegrate it with Jenkins to check code quality.
 
 - [Getting Started](#getting-started)
 - [Create and Add the SonarQube Server Container to the Network](#create-and-add-the-sonarqube-server-container-to-the-network)
@@ -13,7 +13,7 @@ In this tutorial, you will run a SonarQube server in a container and itegrate it
 
 ## Getting Started
 
-Ensure you have completed the steps in the [Pipeline Testing Stage Demo](/04-testing/04-testing.md).
+Ensure you have completed the steps in the [Pipeline Testing Stage Demo](/04-testing-demo/04-testing-demo.md).
 
 -----
 
@@ -32,13 +32,43 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     > **NOTE** - You could run this command in the container itself, but it would retrun to the default value each time the container was restarted.
 
-3. Create a containerfile:
+3. Create a service file:
+
+    ```bash
+    touch sonarqube.service
+    ```
+
+4. Using an editor of your choice, open `sonarqube.service` and add the following code:
+
+    ```ini
+    [Unit]
+    Description=SonarQube service
+    After=syslog.target network.target
+
+    [Service]
+    Type=simple
+    User=sonarqube
+    Group=sonarqube
+    PermissionsStartOnly=true
+    ExecStart=/bin/nohup /usr/bin/java -Xms32m -Xmx32m -Djava.net.preferIPv4Stack=true -jar /opt/sonarqube/lib/sonar-application-10.0.0.68432.jar
+    StandardOutput=syslog
+    LimitNOFILE=65536
+    LimitNPROC=8192
+    TimeoutStartSec=5
+    Restart=always
+    SuccessExitStatus=143
+
+    [Install]
+    WantedBy=multi-user.target
+    ```
+
+5. Create a containerfile:
 
     ```bash
     touch sonarqube.containerfile
     ```
 
-4. Using an editor of your choice, open the `sonarqube.containerfile` and add the following code:
+6. Using an editor of your choice, open `sonarqube.containerfile` and add the following code:
 
     ```dockerfile
     # Pull a Docker or Podman image. For this demo, you will use AlmaLinux 8
@@ -87,7 +117,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     ENV NOTVISIBLE "in users profile"
     RUN echo "export VISIBLE=now" >> /etc/profile
 
-    # Install Java and Node.js
+    # Install Java
     RUN yum -y install java-17-openjdk-devel
 
     # Ensure wget and unzip are installed
@@ -134,9 +164,9 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     CMD [ "/sbin/init" ]
     ```
 
-5. Build the image:
+7. Build the image:
 
-   > **NOTE** - Podman uses `/var/tmp` by default to download and build images. If a `No space left on device` error appears during the build, you can change the `image_copy_tmp_dir` setting in the `containers.conf` file, usually located in `/usr/share/containers/containers.conf`.
+    > **NOTE** - Podman uses `/var/tmp` by default to download and build images. If a `No space left on device` error appears during the build, you can change the `image_copy_tmp_dir` setting in the `containers.conf` file, usually located in `/usr/share/containers/containers.conf`.
 
     ```bash
     # Optional; remove final and intermediate images if they exist
@@ -146,33 +176,80 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     sudo podman build --rm --tag=sonarqube_node_image --file=sonarqube.containerfile
     ```
 
-6. Once complete, look at your image's information:
+8. Once complete, look at your image's information:
 
     ```bash
     sudo podman images
     ```
 
-   **Output (other images may also appear):**
+    **Output (other images may also appear):**
 
-```bash
-# Optional; stop and remove the nodes if they exist
-sudo podman stop sonarqube_node
-sudo podman rm sonarqube_node
-# Create the nodes and attach them to the network
-sudo podman run -dt --name sonarqube_node --replace --restart=unless-stopped --net devnet --ip 192.168.168.30 --cap-add SYS_ADMIN sonarqube_node_image
-sudo podman ps --all
-sudo podman inspect sonarqube_node -f '{{ .NetworkSettings.Networks.devnet.IPAddress }}'
-sleep 10
-sudo podman exec sonarqube_node sysctl vm.max_map_count && sysctl fs.file-max && ulimit -n && ulimit -u
-sudo podman exec sonarqube_node /usr/pgsql-15/bin/postgresql-15-setup initdb && 
-firefox 192.168.168.30:9000
-```
+    ```bash
+    REPOSITORY                      TAG         IMAGE ID      CREATED             SIZE
+    localhost/sonarqube_node_image  latest      931be7a02def  46 seconds ago  2.78 GB
+    docker.io/library/almalinux     8           4e97feadb276  6 weeks ago         204 MB
+    ...
+    ```
+
+    > **NOTE** - Any repositories named `<none>` that appear are intermediate images, used to build the final image. However, the `--rm` option should have told Podman to delete them after a successful build.
+
+9. Using the new image, create a SonarQube node and attach it to the network:
+
+    ```bash
+    # Optional; stop and remove the nodes if they exist
+    sudo podman stop sonarqube_node
+    sudo podman rm sonarqube_node
+    # Create the nodes and attach them to the network
+    sudo podman run -dt --name sonarqube_node --replace --restart=unless-stopped --net devnet --ip 192.168.168.30 --cap-add AUDIT_WRITE sonarqube_node_image
+    ```
+
+10. Look at the containers:
+
+    ```bash
+    sudo podman ps --all
+    ```
+
+    **Output (other nodes may also appear):**
+
+    ```bash
+    CONTAINER ID  IMAGE                                  COMMAND     CREATED         STATUS         PORTS  NAMES
+    048eb28a2192  localhost/sonarqube_node_image:latest  /sbin/init  15 seconds ago  Up 15 seconds         sonarqube_node
+    ...
+    ```
+
+11. Check the IPv4 addresses of the node; it should be `192.168.168.30`:
+
+    ```bash
+    sudo podman inspect sonarqube_node -f '{{ .NetworkSettings.Networks.devnet.IPAddress }}'
+    ``````
 
 -----
 
 ## Access and Setup SonarQube
 
-Lorem ipsum...
+1. Open a Terminal, if one is not already open.
+
+2. Open a browser and navigate to the IPv4 address of the SonarQube server:
+
+    ```bash
+    firefox 192.168.168.30:9000
+    ```
+
+3. A web page should appear, asking you to log in:
+
+    ![Log in to SonarQube](37-log-in-into-sonarqube.png "Log in to SonarQube")
+
+4. Enter **admin** for both the username and the password. A new page will appear, asking you to change your password. Change it to **Change.Me.123** for now:
+
+    ![Update your password](38-update-your-password.png "Update your password")
+
+5. A page will appear, asking you how do you want to create your project:
+
+    ![How do you want to create your project?](39-how-do-you-want-to-create-your-project.png "How do you want to create your project?")
+
+    > **NOTE** - A warning appears at the bottom of the page, stating that, *"The embedded database should be used for evaluation purposes only."* By default, SonarQube uses a built-in H2 database. You can change the database to [a supported database, such as PostgreSQL, MS SQL Server, and Oracle/MySQL](https://docs.sonarsource.com/sonarqube/9.9/setup-and-upgrade/install-the-server/) if you like, but that is beyond the scope of this tutorial. Please note that the Community Edition does not support running SonarQube in a clustered configuration.
+
+6. Unfortunately, Subversion is not a supported DevOps platform.
 
 -----
 

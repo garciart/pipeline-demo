@@ -14,11 +14,7 @@ In this tutorial, you will run a Jenkins automation server in a container, to ma
 
 ## Getting Started
 
-Perform the following tasks from the [Podman Network Demo](/01-podman-network/01-podman-network.md).
-
-- [Environment](/01-podman-network/01-podman-network.md#environment)
-- [Start Podman](/01-podman-network/01-podman-network.md#start-podman)
-- [Create the Network](/01-podman-network/01-podman-network.md#create-the-network)
+Ensure you have completed the steps in the [Subversion Container Demo](/02-svn-container/02-svn-container.md).
 
 -----
 
@@ -232,4 +228,4 @@ Once you have set up Jenkins, return here and continue the tutorial.
 
 ## Summary
 
-In this tutorial, you ran a Jenkins automation server in a container, pulling code from a Subversion server and running a build using a Jenkinsfile. Please continue to our [Pipeline Testing Stage Demo](/04-testing/04-testing.md). Remember, this is only a proof-of-concept demo for a single user; you should not use it for production.
+In this tutorial, you ran a Jenkins automation server in a container, pulling code from a Subversion server and running a build using a Jenkinsfile. Please continue to our [Pipeline Testing Stage Demo](/04-testing-demo/04-testing-demo.md). Remember, this is only a proof-of-concept demo for a single user; you should not use it for production.

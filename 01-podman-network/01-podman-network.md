@@ -162,7 +162,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 4. Build the image:
 
-   > **NOTE** - Podman uses `/var/tmp` by default to download and build images. If a `No space left on device` error appears during the build, you can change the `image_copy_tmp_dir` setting in the `containers.conf` file, usually located in `/usr/share/containers/containers.conf`.
+    > **NOTE** - Podman uses `/var/tmp` by default to download and build images. If a `No space left on device` error appears during the build, you can change the `image_copy_tmp_dir` setting in the `containers.conf` file, usually located in `/usr/share/containers/containers.conf`.
 
     ```bash
     # Optional; remove final and intermediate images if they exist
@@ -379,7 +379,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 7. Log out when finished:
 
     ```bash
-    logout
+    exit
     ```
 
 8. Perform the same tasks on the second container (managed_node2).

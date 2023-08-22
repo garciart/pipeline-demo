@@ -21,7 +21,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     touch jenkins-manual.containerfile
     ```
 
-3. Using an editor of your choice, open the `jenkins-manual.containerfile` and add the following code:
+3. Using an editor of your choice, open `jenkins-manual.containerfile` and add the following code:
 
     ```dockerfile
     # Pull a Docker or Podman image. For this demo, you will use AlmaLinux 8
@@ -133,7 +133,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     > **NOTE** - Any repositories named `<none>` that appear are intermediate images, used to build the final image. However, the `--rm` option should have told Podman to delete them after a successful build.
 
-6. Using the new image, create an SVN node and attach it to the network:
+6. Using the new image, create a Jenkins node and attach it to the network:
 
     ```bash
     # Optional; stop and remove the node if it exists

@@ -360,7 +360,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 2. Ensure you are in the `demorepo` directory:
 
     ```bash
-    cd demorepo
+    pwd
     ```
 
 3. Ensure your local repository is up-to-date with the remote repository. When prompted for the repository password, enter `Change.Me.123`:
@@ -433,6 +433,8 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     15
     Initial commit.
     ```
+
+11. To see the list of files in your commit, use the `tree` option:
 
     ```bash
     sudo svnlook tree /var/lib/containers/storage/volumes/svn-root/_data/demorepo
