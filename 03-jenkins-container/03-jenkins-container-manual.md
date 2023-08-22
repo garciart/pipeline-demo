@@ -23,7 +23,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 3. Using an editor of your choice, open the `jenkins-manual.containerfile` and add the following code:
 
-    ```makefile
+    ```dockerfile
     # Pull a Docker or Podman image. For this demo, you will use AlmaLinux 8
     FROM almalinux:8
 
@@ -53,12 +53,12 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
         systemctl enable sshd
 
     # Customize the SSH daemon
-    RUN mkdir /var/run/sshd &&\
+    RUN mkdir --parents /var/run/sshd &&\
         ssh-keygen -A &&\
         cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak &&\
         sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config &&\
         cp /etc/pam.d/sshd /etc/pam.d/sshd.bak &&\
-        sed 's@session\s*required\s*pam_loginuid.so@#session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+        sed -i 's@session\s*required\s*pam_loginuid.so@#session optional pam_loginuid.so@g' /etc/pam.d/sshd
 
     # Prevent 'System is booting up. Unprivileged users are not permitted to log in yet' error when not root
     # Do not exit on error if the directory does not exist: rm /run/nologin || true
@@ -69,8 +69,12 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     ENV NOTVISIBLE "in users profile"
     RUN echo "export VISIBLE=now" >> /etc/profile
 
-    # Install Java and fontconfig
-    RUN yum -y install java-11-openjdk-devel java-17-openjdk-devel fontconfig
+    # Install Java, fontconfig and Node.js (for Sonar Scanner)
+    RUN yum -y install java-17-openjdk-devel fontconfig
+    RUN yum -y install nodejs
+    RUN npm cache clean -f &&\
+        npm install -g n &&\
+        n stable
 
     # Install the wget tool to fetch the Jenkins repository:
     RUN yum -y install wget
@@ -91,6 +95,9 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     # Allow traffic through ports 22 (SSH), 80 (HTTP), and 8080 (Jenkins)
     EXPOSE 22 80 8080
+
+    # Ensure the system is still up-to-date
+    RUN yum -y update
 
     # Start the systemd service
     # https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html/managing_containers/running_containers_as_systemd_services_with_podman#starting_services_within_a_container_using_systemd

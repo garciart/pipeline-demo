@@ -1,7 +1,8 @@
 # Pull a Docker or Podman image. For this demo, you will use AlmaLinux 8
 FROM almalinux:8
+USER root
 
-# Ensure system is up-to-date
+# Ensure the system is up-to-date
 RUN yum -y update &&\
     yum -y upgrade &&\
     yum -y clean all &&\
@@ -43,32 +44,44 @@ RUN rm /run/nologin || :
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
-# Install Java, fontconfig and Node.js (for Sonar Scanner)
-RUN yum -y install java-17-openjdk-devel fontconfig
-RUN yum -y install nodejs
-RUN npm cache clean -f &&\
-    npm install -g n &&\
-    n stable
+# Install Java and Node.js
+RUN yum -y install java-17-openjdk-devel
 
-# Install the wget tool to fetch the Jenkins repository:
-RUN yum -y install wget
+# Ensure wget and unzip are installed
+RUN yum -y install wget && yum -y install unzip
 
-# Get the Jenkins repo and key
-RUN wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo &&\
-    rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key &&\
-    yum makecache
+# Download and extract SonarQube
+RUN mkdir --parents /opt
+RUN wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-10.0.0.68432.zip
+RUN unzip sonarqube-10.0.0.68432.zip -d /opt
+RUN mv /opt/sonarqube-10.0.0.68432 /opt/sonarqube
+RUN rm -f sonarqube-10.0.0.68432.zip
 
-# Install Jenkins
-RUN yum -y install jenkins
+RUN wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+RUN unzip sonar-scanner-cli-5.0.1.3006-linux.zip -d /opt
+# FYI: Unzip changes the name (removing the -cli part)
+RUN mv /opt/sonar-scanner-5.0.1.3006-linux /opt/sonar-scanner
+RUN rm -f sonar-scanner-cli-5.0.1.3006-linux.zip
 
-# Enable Jenkins as a service
-RUN systemctl enable jenkins
+# Create a SonarQube user
+# id -u sonarqube &>/dev/null || useradd --home-dir /opt/sonarqube/ --groups wheel --system sonarqube
+RUN useradd -c "SonarQube Account" -d /opt/sonarqube/ -G wheel -r sonarqube &&\
+    echo Change.Me.123 | passwd sonarqube --stdin &&\
+    chown -R sonarqube:sonarqube /opt/sonarqube &&\
+    chmod 775 -R /opt/sonarqube
 
-# Install Python for Flask demo
-RUN yum -y install python39
+RUN chown -R sonarqube:sonarqube /opt/sonar-scanner &&\
+    chmod 775 -R /opt/sonar-scanner
 
-# Allow traffic through ports 22 (SSH), 80 (HTTP), and 8080 (Jenkins)
-EXPOSE 22 80 8080
+# Create the SonarQube service
+ADD sonarqube.service /etc/systemd/system/sonarqube.service
+
+# Start SonarQube
+RUN systemctl enable sonarqube
+RUN runuser --login sonarqube --command "/opt/sonarqube/bin/linux-x86-64/sonar.sh start"
+
+# Allow traffic through ports 22 (SSH) and 9000 (SonarQube)
+EXPOSE 22 9000
 
 # Ensure the system is still up-to-date
 RUN yum -y update

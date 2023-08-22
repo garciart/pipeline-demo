@@ -27,12 +27,12 @@ RUN systemctl enable httpd &&\
     systemctl enable sshd
 
 # Customize the SSH daemon
-RUN mkdir /var/run/sshd &&\
+RUN mkdir --parents /var/run/sshd &&\
     ssh-keygen -A &&\
     cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak &&\
     sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config &&\
     cp /etc/pam.d/sshd /etc/pam.d/sshd.bak &&\
-    sed 's@session\s*required\s*pam_loginuid.so@#session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+    sed -i 's@session\s*required\s*pam_loginuid.so@#session optional pam_loginuid.so@g' /etc/pam.d/sshd
 
 # Prevent 'System is booting up. Unprivileged users are not permitted to log in yet' error when not root
 # Do not exit on error if the directory does not exist: rm /run/nologin || true

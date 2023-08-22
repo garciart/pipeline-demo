@@ -1,0 +1,45 @@
+pipeline {
+    agent {
+        any {
+            image 'python:3'
+        }
+    }
+    stages {
+        stage('build') {
+            steps {
+                sh 'python3 -m pip install --user Flask'
+                sh 'python3 -m pip install --user xmlrunner'
+                sh 'cat /etc/os-release'
+            }
+        }
+        stage('test') {
+            steps {
+                // Ensure the data.csv file is not corrupted
+                sh 'echo "bc1932ebf66ff108fb5ff0a6769f2023a9002c7dafee53d85f14c63cab428b4a  data.csv" | sha256sum -c'
+                // Unit test app.py
+                sh 'python3 test_app.py'
+            }
+            post {
+                always {
+                    junit 'test-reports/*.xml'
+                }
+            }
+        }
+        stage('SonarQube analysis') {
+            environment {
+                SCANNER_HOME = tool 'MySonarQubeScanner'
+                PROJECT_NAME = "Pipeline-Demo"
+            }
+            steps {
+                withSonarQubeEnv('MySonarQubeServer') { // If you have configured more than one global server connection, you can specify its name
+                    sh '''$SCANNER_HOME/bin/sonar-scanner \
+                    -Dsonar.projectKey=Pipeline-Demo \
+                    -Dsonar.sources=. \
+                    -Dsonar.svn.username=svnuser \
+                    -Dsonar.svn.password.secured=Change.Me.123 \
+                    -Dsonar.host.url=http://192.168.168.30:9000'''
+                }
+            }
+        }
+    }
+}

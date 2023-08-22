@@ -11,7 +11,7 @@ RUN yum -y update &&\
 ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
 
 # Use a Groovy script to configure the admin user
-COPY init.groovy /usr/share/jenkins/ref/init.groovy.d/
+COPY init.groovy /usr/share/jenkins/ref/init.groovy.d
 
 # Install the recommended plugins, plus the Subversion and JUnit plugins
 # https://github.com/jenkinsci/jenkins/blob/master/core/src/main/resources/jenkins/install/platform-plugins.json
@@ -26,6 +26,13 @@ RUN echo Change.Me.321 | passwd root --stdin
 
 # Install Python for Flask demo
 RUN yum -y install python39
+
+# Install Java, fontconfig and Node.js (for Sonar Scanner)
+RUN yum -y install java-17-openjdk-devel fontconfig
+RUN yum -y install nodejs
+RUN npm cache clean -f &&\
+    npm install -g n &&\
+    n stable
 
 # Ensure the system is still up-to-date
 RUN yum -y update

@@ -4,7 +4,7 @@ sudo dnf -y update
 sudo dnf -y upgrade
 sudo dnf -y clean all
 sudo dnf -y autoremove
-sudo subscription-manager repos --enable codeready-builder-for-rhel-8-$(arch)-rpms
+sudo subscription-manager repos --enable codeready-builder-for-rhel-8-"$(arch)"-rpms
 sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 sudo dnf -y install epel-release
 sudo dnf -y install make gcc kernel-headers kernel-devel perl dkms bzip2
@@ -23,7 +23,7 @@ sudo systemctl enable --now cockpit.socket
 sudo firewall-cmd --add-service=cockpit --permanent
 sudo firewall-cmd --reload
 mkdir Workspace
-cd Workspace/
+cd Workspace/ || exit
 git clone https://github.com/garciart/pipeline-demo.git
 sudo shutdown -r now
 
@@ -67,12 +67,12 @@ RUN systemctl enable httpd &&\
     systemctl enable sshd
 
 # Customize the SSH daemon
-RUN mkdir /var/run/sshd &&\
+RUN mkdir --parents /var/run/sshd &&\
     ssh-keygen -A &&\
     cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak &&\
     sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config &&\
     cp /etc/pam.d/sshd /etc/pam.d/sshd.bak &&\
-    sed 's@session\s*required\s*pam_loginuid.so@#session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+    sed -i 's@session\s*required\s*pam_loginuid.so@#session optional pam_loginuid.so@g' /etc/pam.d/sshd
 
 # Prevent 'System is booting up. Unprivileged users are not permitted to log in yet' error when not root
 # Do not exit on error if the directory does not exist: rm /run/nologin || true
@@ -113,6 +113,7 @@ sudo podman inspect managed_node2 -f '{{ .NetworkSettings.Networks.devnet.IPAddr
 ping -c 2 192.168.168.101
 ping -c 2 192.168.168.102
 ssh-keygen -R 192.168.168.101
+ssh-keygen -R 192.168.168.102
 
 # # Ping container 2 from container 1
 # sudo podman exec -it managed_node1 /usr/bin/bash
@@ -218,12 +219,12 @@ RUN systemctl enable httpd &&\
     systemctl enable sshd
 
 # Customize the SSH daemon
-RUN mkdir /var/run/sshd &&\
+RUN mkdir --parents /var/run/sshd &&\
     ssh-keygen -A &&\
     cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak &&\
     sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config &&\
     cp /etc/pam.d/sshd /etc/pam.d/sshd.bak &&\
-    sed 's@session\s*required\s*pam_loginuid.so@#session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+    sed -i 's@session\s*required\s*pam_loginuid.so@#session optional pam_loginuid.so@g' /etc/pam.d/sshd
 
 # Prevent 'System is booting up. Unprivileged users are not permitted to log in yet' error when not root
 # Do not exit on error if the directory does not exist: rm /run/nologin || true
@@ -297,20 +298,20 @@ firefox 192.168.168.10/svn/demorepo
 # Part 2b: Push to the repository
 sudo yum -y install subversion
 svn checkout http://192.168.168.10/svn/demorepo/
+
 sed -i --regexp-extended 's/^.{0,2}store-plaintext-passwords = no/store-plaintext-passwords = no/g' ~/.subversion/servers
 sed -i -E 's/^.{0,2}store-passwords = no/store-passwords = no/g' ~/.subversion/servers
-cd demorepo
+cd demorepo || exit
 svn update
 
 echo -e "# Pipeline Demo\n\nThis is a demo.\n" > README.md
 svn add README.md
-
 svn commit -m "Initial commit."
 
 sudo svnlook info /var/lib/containers/storage/volumes/svn-root/_data/demorepo
 sudo svnlook tree /var/lib/containers/storage/volumes/svn-root/_data/demorepo
 firefox 192.168.168.10/svn/demorepo
-cd ..
+cd .. || exit
 
 # Part 3: Create the Jenkins container
 touch jenkins-manual.containerfile
@@ -344,12 +345,12 @@ RUN systemctl enable httpd &&\
     systemctl enable sshd
 
 # Customize the SSH daemon
-RUN mkdir /var/run/sshd &&\
+RUN mkdir --parents /var/run/sshd &&\
     ssh-keygen -A &&\
     cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak &&\
     sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config &&\
     cp /etc/pam.d/sshd /etc/pam.d/sshd.bak &&\
-    sed 's@session\s*required\s*pam_loginuid.so@#session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+    sed -i 's@session\s*required\s*pam_loginuid.so@#session optional pam_loginuid.so@g' /etc/pam.d/sshd
 
 # Prevent 'System is booting up. Unprivileged users are not permitted to log in yet' error when not root
 # Do not exit on error if the directory does not exist: rm /run/nologin || true
@@ -375,7 +376,7 @@ RUN wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/j
 RUN yum -y install jenkins
 
 # Enable Jenkins as a service
-RUN systemctl enable jenkins
+RUN systemctl enable jenkins # noqa
 
 # Install Python for Flask demo
 RUN yum -y install python39
@@ -403,6 +404,7 @@ sudo podman rm jenkins_node
 sudo podman run -dt --name jenkins_node --replace --restart=unless-stopped --net devnet --ip 192.168.168.20 --cap-add AUDIT_WRITE jenkins_node_image
 sudo podman ps --all
 sudo podman inspect jenkins_node -f '{{ .NetworkSettings.Networks.devnet.IPAddress }}'
+sleep 10
 firefox 192.168.168.20:8080
 sudo podman exec jenkins_node cat /var/lib/jenkins/secrets/initialAdminPassword
 
@@ -411,8 +413,9 @@ sudo podman exec jenkins_node cat /var/lib/jenkins/secrets/initialAdminPassword
 # cat /var/lib/jenkins/secrets/initialAdminPassword
 # logout
 
-cd demorepo
+cd demorepo || exit
 svn update
+
 touch Jenkinsfile
 cat <<EOF > Jenkinsfile
 pipeline {
@@ -447,13 +450,14 @@ pipeline {
 EOF
 svn add . --force
 svn commit -m "Added Jenkinsfile."
+
 cd ..
 
 
 # Part 4: Jenkins testing Stage
 python3 -m pip install --upgrade --user Flask
 python3 -m pip install --user xmlrunner
-cd demorepo
+cd ../demorepo || return
 svn update
 
 touch data.csv

@@ -84,7 +84,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 7. Using an editor of your choice, open the `jenkins-auto.containerfile` and add the following code:
 
-    ```makefile
+    ```dockerfile
     FROM jenkins/jenkins:almalinux
     USER root
 
@@ -98,7 +98,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
 
     # Use a Groovy script to configure the admin user
-    COPY init.groovy /usr/share/jenkins/ref/init.groovy.d/
+    COPY init.groovy /usr/share/jenkins/ref/init.groovy.d
 
     # Install the recommended plugins, plus the Subversion and JUnit plugins
     # https://github.com/jenkinsci/jenkins/blob/master/core/src/main/resources/jenkins/install/platform-plugins.json
@@ -113,6 +113,16 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     # Install Python for Flask demo
     RUN yum -y install python39
+
+    # Install Java, fontconfig and Node.js (for Sonar Scanner)
+    RUN yum -y install java-17-openjdk-devel fontconfig
+    RUN yum -y install nodejs
+    RUN npm cache clean -f &&\
+        npm install -g n &&\
+        n stable
+
+    # Ensure the system is still up-to-date
+    RUN yum -y update
 
     # Allow traffic through port 8080 (Jenkins)
     EXPOSE 8080
