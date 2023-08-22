@@ -76,7 +76,7 @@ Once you have set up Jenkins, return here and continue the tutorial.
 
     ![Jenkins Pipeline Job Page](23-jenkins-pipeline-job-page.png "Jenkins Pipeline Job Page")
 
-7. Wait two minutes, then refresh the page. The initial build should appear under **Build History**, along with the **Stage View***:
+7. Wait two minutes, then refresh the page. The initial build should appear under **Build History**, along with the **Stage View**:
 
     > **NOTE** - No other builds will appear until there is a change in the repository or configuration.
 
@@ -210,7 +210,7 @@ Once you have set up Jenkins, return here and continue the tutorial.
     svn commit -m "Added Jenkinsfile."
     ```
 
-17. Go back to Jenkins, wait two minutes for Jenkins to contact the SVN server, then refresh the page. Another build should appear under **Build History**, along with the **Stage View***:
+17. Go back to Jenkins, wait two minutes for Jenkins to contact the SVN server, then refresh the page. Another build should appear under **Build History**, along with the **Stage View**:
 
     > **NOTE** - If refresh does not work, click on **Build Now**.
 

@@ -184,10 +184,10 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     RUN export PATH=/opt/sonar-scanner/bin:$PATH
 
     # Create a SonarQube user
-    # id -u sonarqube &>/dev/null || useradd --home-dir /opt/sonar-scanner --groups wheel --system sonarqube
-    RUN useradd -c "SonarScanner Account" -d /opt/sonar-scanner -G wheel -r sonarqube &&\
-        echo Change.Me.123 | passwd sonarqube --stdin &&\
-        chown -R sonarqube:sonarqube /opt/sonar-scanner &&\
+    # id -u sonaruser &>/dev/null || useradd --home-dir /opt/sonar-scanner --groups wheel --system sonaruser
+    RUN useradd -c "SonarScanner Account" -d /opt/sonar-scanner -G wheel -r sonaruser &&\
+        echo Change.Me.123 | passwd sonaruser --stdin &&\
+        chown -R sonaruser:sonaruser /opt/sonar-scanner &&\
         chmod 775 -R /opt/sonar-scanner
 
     # Allow traffic through ports 22 (SSH), 80 (HTTP), and SVN (3690)
@@ -264,10 +264,14 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     ```bash
     sudo podman exec -it svn_node /usr/bin/bash
-    ```
 
-    ```bash
+    -or-
+
     ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@192.168.168.10
+
+    -or-
+
+    ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null user@192.168.168.10
     ```
 
 -----

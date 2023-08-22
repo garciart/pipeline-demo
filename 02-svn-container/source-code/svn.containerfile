@@ -91,10 +91,10 @@ RUN rm -f sonar-scanner-cli-5.0.1.3006-linux.zip
 RUN export PATH=/opt/sonar-scanner/bin:$PATH
 
 # Create a SonarQube user
-# id -u sonarqube &>/dev/null || useradd --home-dir /opt/sonar-scanner --groups wheel --system sonarqube
-RUN useradd -c "SonarScanner Account" -d /opt/sonar-scanner -G wheel -r sonarqube &&\
-    echo Change.Me.123 | passwd sonarqube --stdin &&\
-    chown -R sonarqube:sonarqube /opt/sonar-scanner &&\
+# id -u sonaruser &>/dev/null || useradd --home-dir /opt/sonar-scanner --groups wheel --system sonaruser
+RUN useradd -c "SonarScanner Account" -d /opt/sonar-scanner -G wheel -r sonaruser &&\
+    echo Change.Me.123 | passwd sonaruser --stdin &&\
+    chown -R sonaruser:sonaruser /opt/sonar-scanner &&\
     chmod 775 -R /opt/sonar-scanner
 
 # Allow traffic through ports 22 (SSH), 80 (HTTP), and SVN (3690)

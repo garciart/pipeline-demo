@@ -288,16 +288,18 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
                     sh 'python3 test_app.py'
                 }
                 post {
-                    success {
-                        echo "Good to go!"
-                    }
-                    failure {
-                        echo "Houston, we've had a problem."
-                    }
                     always {
                         junit 'test-reports/*.xml'
                     }
                 }
+            }
+        }
+        post {
+            success {
+                echo "Good to go!"
+            }
+            failure {
+                echo "Houston, we've had a problem."
             }
         }
     }
@@ -323,7 +325,7 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
 
     ![Jenkins Dashboard with Project](/03-jenkins-container/27-jenkins-dashboard-with-project.png "Jenkins Dashboard with Project")
 
-2. Wait two minutes for Jenkins to contact the SVN server, then refresh the page. Another build should appear under **Build History**, along with the **Stage View***:
+2. Wait two minutes for Jenkins to contact the SVN server, then refresh the page. Another build should appear under **Build History**, along with the **Stage View**:
 
     > **NOTE** - If refresh does not work, click on **Build Now**.
 

@@ -167,10 +167,14 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     ```bash
     sudo podman exec -it jenkins_node /usr/bin/bash
-    ```
 
-    ```bash
+    -or-
+
     ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@192.168.168.20
+
+    -or-
+
+    ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null user@192.168.168.20
     ```
 
 -----

@@ -30,7 +30,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 1. Open a Terminal, if one is not already open.
 
-2. SonarQube uses the Elastisearch search engine, and Elasticsearch uses a `mmapfs` directory to store its indices. On most systems, the default mmap count limit is 65530, which is too low for Elastisearch, resulting in out-of-memory exceptions. In order for SonarQube to work, [you must set the `vm.max_map_count` on the container's host to a minimum value of 262144.](https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html):
+2. SonarQube uses the Elastisearch search engine, and Elasticsearch uses a `mmapfs` directory to store its indices. On most systems, the default mmap count limit is 65530, which is too low for Elastisearch, resulting in out-of-memory exceptions. In order for SonarQube to work, [you must set the `vm.max_map_count` on the container's host to a minimum value of 262144](https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html):
 
     ```bash
     sudo dnf -y install procps-ng
@@ -54,8 +54,8 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     [Service]
     Type=simple
-    User=sonarqube
-    Group=sonarqube
+    User=sonaruser
+    Group=sonaruser
     PermissionsStartOnly=true
     ExecStart=/bin/nohup /usr/bin/java -Xms32m -Xmx32m -Djava.net.preferIPv4Stack=true -jar /opt/sonarqube/lib/sonar-application-10.0.0.68432.jar
     StandardOutput=syslog
@@ -145,13 +145,13 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     RUN export PATH=/opt/sonar-scanner/bin:$PATH
 
     # Create a SonarQube user
-    # id -u sonarqube &>/dev/null || useradd --home-dir /opt/sonarqube/ --groups wheel --system sonarqube
-    RUN useradd -c "SonarQube Account" -d /opt/sonarqube/ -G wheel -r sonarqube &&\
-        echo Change.Me.123 | passwd sonarqube --stdin &&\
-        chown -R sonarqube:sonarqube /opt/sonarqube &&\
+    # id -u sonaruser &>/dev/null || useradd --home-dir /opt/sonarqube/ --groups wheel --system sonaruser
+    RUN useradd -c "SonarQube Account" -d /opt/sonarqube/ -G wheel -r sonaruser &&\
+        echo Change.Me.123 | passwd sonaruser --stdin &&\
+        chown -R sonaruser:sonaruser /opt/sonarqube &&\
         chmod 775 -R /opt/sonarqube
 
-    RUN chown -R sonarqube:sonarqube /opt/sonar-scanner &&\
+    RUN chown -R sonaruser:sonaruser /opt/sonar-scanner &&\
         chmod 775 -R /opt/sonar-scanner
 
     # Create the SonarQube service
@@ -159,7 +159,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     # Start SonarQube
     RUN systemctl enable sonarqube
-    RUN runuser --login sonarqube --command "/opt/sonarqube/bin/linux-x86-64/sonar.sh start"
+    RUN runuser --login sonaruser --command "/opt/sonarqube/bin/linux-x86-64/sonar.sh start"
 
     # Allow traffic through ports 22 (SSH) and 9000 (SonarQube)
     EXPOSE 22 9000
@@ -229,16 +229,20 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     ```bash
     sudo podman inspect sonarqube_node -f '{{ .NetworkSettings.Networks.devnet.IPAddress }}'
-    ``````
+    ```
 
     > **NOTE** - If you run into any issues, you can always access the container using one of the following commands:
 
     ```bash
     sudo podman exec -it sonarqube_node /usr/bin/bash
-    ```
 
-    ```bash
+    -or-
+
     ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@192.168.168.30
+
+    -or-
+
+    ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null user@192.168.168.30
     ```
 
 -----
@@ -257,7 +261,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     ![Log in to SonarQube](37-log-in-into-sonarqube.png "Log in to SonarQube")
 
-4. Enter **admin** for both the username and the password. A new page will appear, asking you to change your password. Change it to **Change.Me.123** for now:
+4. Enter ***"admin"*** for both the username and the password. A new page will appear, asking you to change your password. Change it to ***"Change.Me.123"*** for now:
 
     ![Update your password](38-update-your-password.png "Update your password")
 
@@ -269,13 +273,13 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 6. Unfortunately, Subversion is not a supported DevOps platform. Click on **Manually**, and the **Create a project** page should appear. Enter the following values, and then click on **Setup**:
 
-    - Project display name: pipeline-demo
-    - Project key: pipeline-demo
-    - Main branch name: main
+    - **Project display name**: pipeline-demo
+    - **Project key**: pipeline-demo
+    - **Main branch name**: main
 
     ![Create a project](40-create-a-project.png "Create a project")
 
-7. A new page should appear, asking how do you want to analyze your repository. Even though you are going to use Jenkins, SonarQube does not support Subversion thorugh Jenkins, so click on **Locally**:
+7. A new page should appear, asking how do you want to analyze your repository. Even though you are going to use Jenkins, SonarQube does not support Subversion through Jenkins, so click on **Locally**:
 
     ![How do you want to analyze your repository?](41-how-do-you-want-to-analyze-your-repository.png "How do you want to analyze your repository?")
 
@@ -299,13 +303,13 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     ![Execute the Scanner](46-execute-the-scanner.png "Execute the Scanner")
 
-13. The good news is that you installed SonarScanner when you created the Subversion container, using the containerfile. Right now, if your Jenkins container is not open in a browser, open a Terminal (if one is not already open), and access your Jenkins container:
+13. The good news is that you installed SonarScanner when you created the Subversion container, using the containerfile. Right now, if your Jenkins container is not open in a browser, open a Terminal (if one is not open), and access your Jenkins container:
 
     ```bash
     firefox 192.168.168.20:8080
     ```
 
-14. If you are not so already, log in, entering ***"jenkinsuser"*** for the username and ***"Change.Me.123"*** for the password. Click on **Manage Jenkins**, then **Plugins**. Click on **Available plugins**, and, in the text box, enter ***"sonarqube"***:
+14. If you are not logged in, log in, entering ***"jenkinsuser"*** for the username and ***"Change.Me.123"*** for the password. Click on **Manage Jenkins**, then **Plugins**. Click on **Available plugins**, and, in the text box, enter ***"sonarqube"***:
 
     ![Available plugins](47-available-plugins.png "Available plugins")
 
@@ -340,9 +344,9 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     ![SonarQube Scanner](52-sonarqube-scanner.png "SonarQube scanner")
 
-21. For **Name**, enter ***"DemoRepoSonarQubeScanner"***. Leave the default **Install from Maven Central** option as is, but record the version number (e.g., SonarQube Scanner 5.0.1.3006); you will need it later. Click **Save** when done.
+21. For **Name**, enter ***"DemoRepoSonarQubeScanner"***. Leave the default **Install from Maven Central** option as-is, but record the version number (i.e., SonarQube Scanner 5.0.1.3006); you will need it later. Click **Save** when done.
 
-22. Open your Jenkinsfile. Add the following stage after the **test** stage, using the code snippet provided by SonarQube earlier, along with your Subversion credentials:
+22. Open your Jenkinsfile. Add the following stage after the **test stage**, using the code snippet provided by SonarQube earlier, along with your Subversion credentials:
 
     ```groovy
     stage('SonarQube Analysis') {
@@ -355,6 +359,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
                 sh '''$SCANNER_HOME/bin/sonar-scanner \
                 -Dsonar.projectKey=pipeline-demo \
                 -Dsonar.sources=. \
+                -Dsonar.exclusions=test-reports/**/*.* \
                 -Dsonar.host.url=http://192.168.168.30:9000 \
                 -Dsonar.token=sqp_4e4787c0fb81f468aa798896c332c7db2a71004b \
                 -Dsonar.scm.provider=svn \
@@ -372,7 +377,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     svn commit -m "Added SonarQube analysis stage."
     ```
 
-24. Go back to Jenkins, wait two minutes for Jenkins to contact the SVN server, then refresh the page. Another build should appear under **Build History**, along with the **Stage View***:
+24. Go back to Jenkins, wait two minutes for Jenkins to contact the SVN server, then refresh the page. Another build should appear under **Build History**, along with the **Stage View**:
 
     > **NOTE** - If refresh does not work, click on **Build Now**.
 
@@ -380,7 +385,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     ![Jenkins Build Page 4](53-jenkins-build-page-4.png "Jenkins Build Page 4")
 
-26. On the **Build** page, click on the **Console Output** link. Look through the output until you come across a line that looks similar to "INFO: ANALYSIS SUCCESSFUL, you can find the results at: http://192.168.168.30:9000/dashboard?id=pipeline-demo":
+26. On the **Build** page, click on the **Console Output** link. Look through the output until you come across a line that looks similar to "`INFO: ANALYSIS SUCCESSFUL, you can find the results at: http://192.168.168.30:9000/dashboard?id=pipeline-demo`":
 
     ![Jenkins Console Output 4](54-jenkins-console-output-4.png "Jenkins Console Output 4")
 

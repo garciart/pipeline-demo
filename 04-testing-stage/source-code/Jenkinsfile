@@ -22,16 +22,18 @@ pipeline {
                 sh 'python3 test_app.py'
             }
             post {
-                success {
-                    echo "Good to go!"
-                }
-                failure {
-                    echo "Houston, we've had a problem."
-                }
                 always {
                     junit 'test-reports/*.xml'
                 }
             }
+        }
+    }
+    post {
+        success {
+            echo "Good to go!"
+        }
+        failure {
+            echo "Houston, we've had a problem."
         }
     }
 }

@@ -571,6 +571,14 @@ pipeline {
             }
         }
     }
+    post {
+        success {
+            echo "Good to go!"
+        }
+        failure {
+            echo "Houston, we've had a problem."
+        }
+    }
 }
 EOF
 svn add . --force
