@@ -13,7 +13,7 @@ In this tutorial, you will run a SonarQube server in a container and itegrate it
 
 ## Getting Started
 
-Ensure you have completed the steps in the [Pipeline Testing Stage Demo](/04-testing-demo/04-testing-demo.md).
+Ensure you have completed the steps in the [Pipeline Testing Stage Demo](/04-testing-stage/04-testing-stage.md).
 
 -----
 

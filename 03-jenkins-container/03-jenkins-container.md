@@ -228,4 +228,4 @@ Once you have set up Jenkins, return here and continue the tutorial.
 
 ## Summary
 
-In this tutorial, you ran a Jenkins automation server in a container, pulling code from a Subversion server and running a build using a Jenkinsfile. Please continue to our [Pipeline Testing Stage Demo](/04-testing-demo/04-testing-demo.md). Remember, this is only a proof-of-concept demo for a single user; you should not use it for production.
+In this tutorial, you ran a Jenkins automation server in a container, pulling code from a Subversion server and running a build using a Jenkinsfile. Please continue to our [Pipeline Testing Stage Demo](/04-testing-stage/04-testing-stage.md). Remember, this is only a proof-of-concept demo for a single user; you should not use it for production.
