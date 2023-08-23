@@ -244,7 +244,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     ![Jenkins Dashboard](11-jenkins-dashboard.png "Jenkins Dashboard")
 
-12. By default, Jenkins uses the Git version control system. To use Subversion with Jenkins, you must install the Subversion plugin. Click on **Manage Jenkins** or navigate to `http://192.168.168.20:80808/manage`. The Mangage Jenkins page should appear:
+12. By default, Jenkins uses the Git version control system. To use Subversion with Jenkins, you must install the Subversion plugin. Click on **Manage Jenkins** or navigate to `http://192.168.168.20:80808/manage`. The Manage Jenkins page should appear:
 
     > **NOTE** - Ignore any errors or issues for now. Restarting Jenkins should fix these issues, which you will do shortly.
 
@@ -254,7 +254,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     ![Jenkins Plugins Page](13-jenkins-plugins-page.png "Jenkins Plugins Page")
 
-14. Click on **Available Plugins** or navigate to <http://192.168.168.20:80808/manage/pluginManager/available>. A list of available plugins should appear. Enter `subversion` in the search box; the **Subversion** plugin should appear at the top of the list. Check the **Install** box next to the plugin:
+14. Click on **Available Plugins** or navigate to <http://192.168.168.20:80808/manage/pluginManager/available>. A list of available plugins should appear. Enter ***"subversion"*** in the search box; the **Subversion** plugin should appear at the top of the list. Check the **Install** box next to the plugin:
 
     ![Jenkins SVN Plugin Search Results](14-jenkins-svn-plugin-search-results.png "Jenkins SVN Plugin Search Results")
 

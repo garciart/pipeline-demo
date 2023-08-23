@@ -30,14 +30,14 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 1. Open a Terminal, if one is not already open.
 
-2. SonarQube uses the Elastisearch search engine, and Elasticsearch uses a `mmapfs` directory to store its indices. On most systems, the default mmap count limit is 65530, which is too low for Elastisearch, resulting in out-of-memory exceptions. In order for SonarQube to work, [you must set the `vm.max_map_count` on the container's host to a minimum value of 262144](https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html):
+2. SonarQube uses the Elasticsearch search engine, and Elasticsearch uses a `mmapfs` directory to store its indices. On most systems, the default mmap count limit is 65530, which is too low for Elasticsearch, resulting in out-of-memory exceptions. In order for SonarQube to work, [you must set the `vm.max_map_count` on the container's host to a minimum value of 262144](https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html):
 
     ```bash
     sudo dnf -y install procps-ng
     sudo sysctl -w vm.max_map_count=262144
     ```
 
-    > **NOTE** - You could run this command in the container itself, but it would retrun to the default value each time the container was restarted.
+    > **NOTE** - You could run this command in the container itself, but it would return to the default value each time the container was restarted.
 
 3. Create a service file:
 
@@ -271,7 +271,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     > **NOTE** - A warning appears at the bottom of the page, stating that, *"The embedded database should be used for evaluation purposes only."* By default, SonarQube uses a built-in H2 database. You can change the database to [a supported database, such as PostgreSQL, MS SQL Server, and Oracle/MySQL](https://docs.sonarsource.com/sonarqube/9.9/setup-and-upgrade/install-the-server/) if you like, but that is beyond the scope of this tutorial. Please note that the Community Edition does not support running SonarQube in a clustered configuration.
 
-6. Unfortunately, Subversion is not a supported DevOps platform. Click on **Manually**, and the **Create a project** page should appear. Enter the following values, and then click on **Setup**:
+6. Unfortunately, Subversion is not a supported DevOps platform. Click on **Manually** and the **Create a project** page should appear. Enter the following values, and then click on **Setup**:
 
     - **Project display name**: pipeline-demo
     - **Project key**: pipeline-demo

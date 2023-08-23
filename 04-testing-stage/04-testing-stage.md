@@ -48,7 +48,7 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
     Password for '<your username>': *************
     ```
 
-4. When prompted for the repository credentials, enter `svnuser` for the username and `Change.Me.123` for the password:
+4. When prompted for the repository credentials, enter ***"svnuser"*** for the username and ***"Change.Me.123"*** for the password:
 
     ```bash
     Authentication realm: <http://192.168.168.10:80> SVN Repository
@@ -62,7 +62,7 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
     cd demorepo
     ```
 
-6. Ensure your local repository is up-to-date with the remote repository. When prompted for the repository password, enter `Change.Me.123`:
+6. Ensure your local repository is up-to-date with the remote repository. When prompted for the repository password, enter ***"Change.Me.123"***:
 
     ```bash
     svn update
@@ -250,7 +250,7 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
     Generating XML reports...
     ```
 
-    > **NOTE** - The test will create a sub-directory named "test-reports", containing your test results in a time-stamped `.xml` file, prefixed with the word `TEST`:
+    > **NOTE** - The test will create a subdirectory named "test-reports", containing your test results in a time-stamped `.xml` file, prefixed with the word `TEST`:
     >
     > ```xml
     > <?xml version="1.0" ?>
@@ -311,7 +311,7 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
     svn add . --force
     ```
 
-17. Push your changes to the remote repository. When prompted for the repository password, enter `Change.Me.123`:
+17. Push your changes to the remote repository. When prompted for the repository password, enter ***"Change.Me.123"***:
 
     ```bash
     svn commit -m "Added simple Flask app with unit test."

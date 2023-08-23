@@ -290,7 +290,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     ![SVN Login Dialog](02-svn-login-dialog-box.png "SVN Login Dialog")
 
-4. Enter `svnuser` for the username and `Change.Me.123` for the password, then click on **Sign In**.
+4. Enter ***"svnuser"*** for the username and ***"Change.Me.123"*** for the password, then click on **Sign In**.
 
 5. The `demorepo` landing page should appear:
 
@@ -317,7 +317,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     Password for '<your username>': *************
     ```
 
-4. When prompted for the repository credentials, enter `svnuser` for the username and `Change.Me.123` for the password:
+4. When prompted for the repository credentials, ***"svnuser"*** for the username and ***"Change.Me.123"*** for the password:
 
     ```bash
     Authentication realm: <http://192.168.168.10:80> SVN Repository
@@ -325,7 +325,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     Password for 'svnuser': *************
     ```
 
-5. When asked if you would like to store your password unencrypted, enter `no`:
+5. When asked if you would like to store your password unencrypted, enter ***"no"***:
 
     ```bash
     -----------------------------------------------------------------------
@@ -378,7 +378,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     pwd
     ```
 
-3. Ensure your local repository is up-to-date with the remote repository. When prompted for the repository password, enter `Change.Me.123`:
+3. Ensure your local repository is up-to-date with the remote repository. When prompted for the repository password, enter ***"Change.Me.123"***:
 
     ```bash
     svn update
@@ -404,7 +404,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     > **NOTE** - The `A` before the filename indicates that the file will be added to the main repository after you commit. You can always check the status of files in your local repository by entering `svn status`.
 
-6. Push your changes to the remote repository. When prompted for the repository password, enter `Change.Me.123`:
+6. Push your changes to the remote repository. When prompted for the repository password, enter ***"Change.Me.123"***:
 
     ```bash
     svn commit -m "Initial commit."
@@ -428,7 +428,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     firefox 192.168.168.10/svn/demorepo
     ```
 
-8. If a popup window appears, asking you to log in, enter `svnuser` for the username and `Change.Me.123` for the password, then click on **Sign In**.
+8. If a popup window appears, asking you to log in, enter ***"svnuser"*** for the username and ***"Change.Me.123"*** for the password, then click on **Sign In**.
 
 9. The `demorepo` landing page should appear, with your changes:
 

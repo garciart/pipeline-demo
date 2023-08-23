@@ -48,7 +48,7 @@ Podman supports ["rootful" (system) and "rootless" (user) modes](https://develop
 
 1. Open a Terminal, if one is not already open.
 
-2. Create a container network named `devnet`:
+2. Create a container network named ***"devnet"***:
 
     ```bash
     # Optional; remove the network if it already exists
@@ -110,7 +110,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     # Pull a Docker or Podman image. For this demo, you will use AlmaLinux 8
     FROM almalinux:8
 
-    # Ensure system is up-to-date
+    # Ensure the system is up-to-date
     RUN yum -y update &&\
         yum -y upgrade &&\
         yum -y clean all &&\
@@ -155,6 +155,9 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     # Allow traffic through ports 22 (SSH) and 80 (HTTP)
     EXPOSE 22 80
 
+    # Ensure the system is still up-to-date
+    RUN yum -y update
+   
     # Start the systemd service
     # https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html/managing_containers/running_containers_as_systemd_services_with_podman#starting_services_within_a_container_using_systemd
     CMD [ "/sbin/init" ]
@@ -243,7 +246,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
    > **NOTE** - Since you are running a process in the container, and not a shell, you cannot use `sudo podman attach managed_node1`.
 
     ```bash
-    sudo podman exec -it managed_node1 /usr/bin/bash
+    sudo podman exec -it managed_node1 /bin/bash
     ```
 
    **Output:**
@@ -291,7 +294,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 1. Open a Terminal, if one is not already open.
 
-2. Access the first container (`192.168.168.101`), using SSH as `root`; enter `Change.Me.321` when prompted for a password:
+2. Access the first container (`192.168.168.101`), using SSH as `root`; enter ***"Change.Me.321"*** when prompted for a password:
 
     ```bash
     ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@192.168.168.101
@@ -344,7 +347,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     logout
     ```
 
-5. Access the first container (`192.168.168.101`), using SSH as `user`; enter `Change.Me.123` when prompted for a password:
+5. Access the first container (`192.168.168.101`), using SSH as `user`; enter ***"Change.Me.123"*** when prompted for a password:
 
     ```bash
     ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null user@192.168.168.101
@@ -358,7 +361,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     [user@15316195c9f0 ~]$ 
     ```
 
-6. Ping the second container (managed_node2) from managed_node1; enter `Change.Me.123` when prompted for a password:
+6. Ping the second container (managed_node2) from managed_node1; enter ***"Change.Me.123"*** when prompted for a password:
 
     ```bash
     sudo ping -c 2 192.168.168.102
@@ -429,7 +432,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     </html>
     ```
 
-7. Copy the web page to the Apache document root path; enter `Change.Me.321` when prompted for a password:
+7. Copy the web page to the Apache document root path; enter ***"Change.Me.123"*** when prompted for a password:
 
     ```bash
     scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null one.html root@192.168.168.101:/var/www/html/index.html
@@ -445,7 +448,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
    ![Your Custom Webpage](01a-podman-custom-webpage.png "Your Custom Webpage")
 
-10. Repeat Steps 5 through 9, but use the IPv4 address of the second container (`192.168.168.102`) and replace "one" with "two" in the title and text of the `one.html` file.
+10. Repeat Steps 5 through 9, but use the IPv4 address of the second container (`192.168.168.102`) and replace ***"one"*** with ***"two"*** in the title and text of the `one.html` file.
 
 -----
 

@@ -27,7 +27,7 @@ In this tutorial, you will ...
 
 ## Adding a Quality Gate
 
-Security Hotspots are security-sensitive code that requires manual review to assess whether or not a vulnerability exists.
+Security Hotspots are security-sensitive code that requires manual review to assess whether a vulnerability exists.
 
 -----
 
