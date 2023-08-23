@@ -22,6 +22,8 @@ In this tutorial, you will create a SonarQube container and integrate it into a 
 
 3. Ensure that the **svn-root** volume exists: `sudo podman volume inspect svn-root`
 
+4. Ensure you are not in the `demorepo` directory (your local repository) yet; otherwise, you may push files to the repository that should not be there, such as containerfiles.
+
 -----
 
 ## Create and Add the SonarQube Server Container to the Network
@@ -34,6 +36,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     ```bash
     sudo dnf -y install procps-ng
+    sudo echo "vm.max_map_count=262144" /etc/sysctl.d/99-sysctl.conf
     sudo sysctl -w vm.max_map_count=262144
     ```
 
@@ -279,7 +282,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     ![Create a project](40-create-a-project.png "Create a project")
 
-7. A new page should appear, asking how do you want to analyze your repository. Even though you are going to use Jenkins, SonarQube does not support Subversion through Jenkins, so click on **Locally**:
+7. A new page should appear, asking how do you want to analyze your repository. Even though you are going to use Jenkins, SonarQube with Jenkins does not support Subversion as a DevOps platform, so click on **Locally**:
 
     ![How do you want to analyze your repository?](41-how-do-you-want-to-analyze-your-repository.png "How do you want to analyze your repository?")
 
@@ -309,7 +312,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     firefox 192.168.168.20:8080
     ```
 
-14. If you are not logged in, log in, entering ***"jenkinsuser"*** for the username and ***"Change.Me.123"*** for the password. Click on **Manage Jenkins**, then **Plugins**. Click on **Available plugins**, and, in the text box, enter ***"sonarqube"***:
+14. If you are not logged in, log in, entering ***"jenkinsuser"*** for the username and ***"Change.Me.123"*** for the password. Click on **Dashboard** -> **Manage Jenkins** -> **Plugins**. Click on **Available plugins**, and, in the text box, enter ***"sonarqube"***:
 
     ![Available plugins](47-available-plugins.png "Available plugins")
 
@@ -317,7 +320,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     ![Download progress](48-download-progress.png "Download progress")
 
-16. Check the **Restart Jenkins when installation is complete and no jobs are running** box. When Jenkins restarts, log back in, and click on **Manage Jenkins**:
+16. Check the **Restart Jenkins when installation is complete and no jobs are running** box. When Jenkins restarts, log back in, and click on **Dashboard** -> **Manage Jenkins**:
 
     ![Manage Jenkins](49-manage-jenkins.png "Manage Jenkins")
 
@@ -340,13 +343,13 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 19. Click on **Save** when finished to return to the Dashboard.
 
-20. Click on **Manage Jenkins**, then click on **Tools**. Scroll down to **SonarQube servers** and click on **Add SonarQube Scanner**:
+20. Click on **Manage Jenkins**, then click on **Tools**. Scroll down to **SonarQube Scanner** and click on **Add SonarQube Scanner**:
 
     ![SonarQube Scanner](52-sonarqube-scanner.png "SonarQube scanner")
 
 21. For **Name**, enter ***"DemoRepoSonarQubeScanner"***. Leave the default **Install from Maven Central** option as-is, but record the version number (i.e., SonarQube Scanner 5.0.1.3006); you will need it later. Click **Save** when done.
 
-22. Open your Jenkinsfile. Add ***"SonarQube Analysis"*** stage after the test stage, using the code snippet provided by SonarQube earlier, along with your Subversion credentials:
+22. Using an editor of your choice, open the Jenkinsfile in your local `demorepo` repository. Add a ***"SonarQube Analysis"*** stage after the test stage, using the code snippet provided by SonarQube earlier, along with your Subversion credentials:
 
     > **NOTE** - Ensure you use the SHA256 hash your development machine created for data.csv, if it is different from the value in the test stage.
 
@@ -370,7 +373,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
                 steps {
                     echo "Testing ${env.JOB_NAME}..."
                     // Ensure the data.csv file is not corrupted
-                    sh 'echo "c510534c3a1c3a6f015bcfdd0da8b29eb1fecde01d4ce43435a59d14d25e3980  data.csv" | sha256sum -c'
+                    sh 'echo "bc1932ebf66ff108fb5ff0a6769f2023a9002c7dafee53d85f14c63cab428b4a  data.csv" | sha256sum -c'
                     // Unit test app.py
                     sh 'python3 test_app.py'
                 }
@@ -415,8 +418,8 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 23. Push your changes to the remote repository. When prompted for the repository password, enter ***"Change.Me.123"***:
 
     ```bash
-    svn add Jenkinsfile
-    svn commit -m "Added SonarQube analysis stage."
+    svn add Jenkinsfile --force
+    svn commit -m "Added SonarQube analysis stage." --non-interactive --username 'svnuser' --password 'Change.Me.123'
     ```
 
 24. Go back to Jenkins, wait two minutes for Jenkins to contact the SVN server, then refresh the page. Another build should appear under **Build History**, along with the **Stage View**:
@@ -439,4 +442,4 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 ## Summary
 
-In this tutorial, you created a SonarQube container and integrated it into a Jenkins pipeline, allowing you to check code quality each time a change is pushed to the repository. Remember, this is only a proof-of-concept demo for a single user; you should not use it for production.
+In this tutorial, you created a SonarQube container and integrated it into a Jenkins pipeline, allowing you to check code quality each time a change is pushed to the repository. Please continue to our [Quality Gates Demo](/06-quality-gates/06-quality-gates.md). Remember, this is only a proof-of-concept demo for a single user; you should not use it for production.

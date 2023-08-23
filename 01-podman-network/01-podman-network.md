@@ -18,7 +18,11 @@ In this tutorial, you will create a simple network of containers. Each container
 
 ## Environment
 
-- A development host, running a Fedora distribution later than 28 (e.g., Red Hat Linux 8, etc.), with a web browser (e.g., Mozilla Firefox); the latest version of Podman compatible with your system; and Python 3.9 or later.
+- A development host, running a Fedora distribution later than 28 (e.g., Red Hat Linux 8, etc.), with:
+  - A desktop environment (e.g., GNOME, KDE, etc.)
+  - A web browser (e.g., Mozilla Firefox, Google Chrome, etc.)
+  - The latest version of Podman compatible with your system
+  - Python 3.9 or later
 - If you are using Red Hat, you will need a subscription to Red Hat to update your system and access packages. Red Hat offers a free [Red Hat Developer Subscription for Individuals](https://developers.redhat.com/).
 - The OpenSSH client, if it is not already installed. To install OpenSSH client, open a Terminal and enter the following command: `sudo yum -y install openssh openssh-askpass openssh-clients`.
 - You will also need the sshpass utility and the Ansible automation suite. To install them, open a Terminal and enter the following command: `python3 -m pip install sshpass ansible`.

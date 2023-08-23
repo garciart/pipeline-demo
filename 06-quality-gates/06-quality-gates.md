@@ -22,6 +22,8 @@ In this tutorial, you will ...
 
 3. Ensure that the **svn-root** volume exists: `sudo podman volume inspect svn-root`
 
+4. Ensure you are not in the `demorepo` directory (your local repository) yet; otherwise, you may push files to the repository that should not be there, such as containerfiles.
+
 -----
 
 ## Adding a Quality Gate

@@ -357,6 +357,12 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     ...
     ```
 
+    > **NOTE** - Subversion has several ways to store passwords and SSH keys (e.g., GNOME-Keyring, svn+ssh, etc.). However, configuring these options are beyond the scope of this tutorial. If you would like to execute Subversion commands without always having to enter your username and password, you can use non-interactive mode:
+    >
+    > ```bash
+    > svn update --non-interactive --username 'svnuser' --password 'Change.Me.123'
+    > ``` 
+
 7. Navigate to the repository directory and take a look at its contents:
 
     ```bash

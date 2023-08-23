@@ -22,6 +22,8 @@ In this tutorial, you will run a Jenkins automation server in a container, to ma
 
 3. Ensure that the **svn-root** volume exists: `sudo podman volume inspect svn-root`
 
+4. Ensure you are not in the `demorepo` directory (your local repository) yet; otherwise, you may push files to the repository that should not be there, such as containerfiles.
+
 -----
 
 ## Create and Add the Jenkins Server Container to the Network
@@ -80,6 +82,8 @@ Once you have set up Jenkins, return here and continue the tutorial.
 
     > **NOTE** - No other builds will appear until there is a change in the repository or configuration.
 
+    > **NOTE** - If refresh does not work, click on **Build Now**.
+
     ![Jenkins Initial Build](24-jenkins-initial-build.png "Jenkins Initial Build")
 
 8. Click on the build (**#1**) under **Build History**. The build page should appear:
@@ -125,10 +129,10 @@ Once you have set up Jenkins, return here and continue the tutorial.
 
 7. Open a Terminal, if one is not already open.
 
-8. Checkout the repository:
+8. Checkout the repository if you have not done so already:
 
     ```bash
-    svn checkout http://192.168.168.10/svn/demorepo/
+    svn checkout http://192.168.168.10/svn/demorepo/ --non-interactive --username 'svnuser' --password 'Change.Me.123'
     ```
 
 9. If prompted for your sudo credentials, enter your password:
@@ -138,7 +142,7 @@ Once you have set up Jenkins, return here and continue the tutorial.
     Password for '<your username>': *************
     ```
 
-10. When prompted for the repository credentials, enter ***"svnuser"*** for the username and ***"Change.Me.123"*** for the password:
+10. If prompted for the repository credentials, enter ***"svnuser"*** for the username and ***"Change.Me.123"*** for the password:
 
     ```bash
     Authentication realm: <http://192.168.168.10:80> SVN Repository
@@ -152,10 +156,10 @@ Once you have set up Jenkins, return here and continue the tutorial.
     cd demorepo
     ```
 
-12. Ensure your local repository is up-to-date with the remote repository. When prompted for the repository password, enter ***"Change.Me.123"***:
+12. Ensure your local repository is up-to-date with the remote repository. If prompted for the repository password, enter ***"Change.Me.123"***:
 
     ```bash
-    svn update
+    svn update --non-interactive --username 'svnuser' --password 'Change.Me.123'
     ```
 
 13. Create a Jenkinsfile:
@@ -204,10 +208,10 @@ Once you have set up Jenkins, return here and continue the tutorial.
     svn add . --force
     ```
 
-16. Push your changes to the remote repository. When prompted for the repository password, enter ***"Change.Me.123"***:
+16. Push your changes to the remote repository. If prompted for the repository password, enter ***"Change.Me.123"***:
 
     ```bash
-    svn commit -m "Added Jenkinsfile."
+    svn commit -m "Added Jenkinsfile." --non-interactive --username 'svnuser' --password 'Change.Me.123'
     ```
 
 17. Go back to Jenkins, wait two minutes for Jenkins to contact the SVN server, then refresh the page. Another build should appear under **Build History**, along with the **Stage View**:

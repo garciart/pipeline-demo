@@ -23,6 +23,8 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
 
 3. Ensure that the **svn-root** volume exists: `sudo podman volume inspect svn-root`
 
+4. Ensure you are not in the `demorepo` directory (your local repository) yet; otherwise, you may push files to the repository that should not be there, such as containerfiles.
+
 -----
 
 ## Checkout the Repository
@@ -38,7 +40,7 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
 2. Checkout the repository:
 
     ```bash
-    svn checkout http://192.168.168.10/svn/demorepo/
+    svn checkout http://192.168.168.10/svn/demorepo/ --non-interactive --username 'svnuser' --password 'Change.Me.123'
     ```
 
 3. If prompted for your sudo credentials, enter your password:
@@ -48,7 +50,7 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
     Password for '<your username>': *************
     ```
 
-4. When prompted for the repository credentials, enter ***"svnuser"*** for the username and ***"Change.Me.123"*** for the password:
+4. If prompted for the repository credentials, enter ***"svnuser"*** for the username and ***"Change.Me.123"*** for the password:
 
     ```bash
     Authentication realm: <http://192.168.168.10:80> SVN Repository
@@ -62,10 +64,10 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
     cd demorepo
     ```
 
-6. Ensure your local repository is up-to-date with the remote repository. When prompted for the repository password, enter ***"Change.Me.123"***:
+6. Ensure your local repository is up-to-date with the remote repository. If prompted for the repository password, enter ***"Change.Me.123"***:
 
     ```bash
-    svn update
+    svn update --non-interactive --username 'svnuser' --password 'Change.Me.123'
     ```
 
 -----
@@ -105,7 +107,7 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
     **Output:**
 
     ```bash
-    c510534c3a1c3a6f015bcfdd0da8b29eb1fecde01d4ce43435a59d14d25e3980  data.csv
+    bc1932ebf66ff108fb5ff0a6769f2023a9002c7dafee53d85f14c63cab428b4a  data.csv
     ```
 
     > **NOTE** - Due to small differences, such as default encoding or a carriage return to the end of the file, your result may be different (e.g, `bc1932ebf66ff108fb5ff0a6769f2023a9002c7dafee53d85f14c63cab428b4a`, `b055021f394e6e841bf004a3e1a3f65d1521b861f275c9e5b06ace04dd1e6a8e`, etc.). Use the hash produced by your development machine.
@@ -285,7 +287,7 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
                 steps {
                     echo "Testing ${env.JOB_NAME}..."
                     // Ensure the data.csv file is not corrupted
-                    sh 'echo "c510534c3a1c3a6f015bcfdd0da8b29eb1fecde01d4ce43435a59d14d25e3980  data.csv" | sha256sum -c'
+                    sh 'echo "bc1932ebf66ff108fb5ff0a6769f2023a9002c7dafee53d85f14c63cab428b4a  data.csv" | sha256sum -c'
                     // Unit test app.py
                     sh 'python3 test_app.py'
                 }
@@ -313,10 +315,10 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
     svn add . --force
     ```
 
-17. Push your changes to the remote repository. When prompted for the repository password, enter ***"Change.Me.123"***:
+17. Push your changes to the remote repository. If prompted for the repository password, enter ***"Change.Me.123"***:
 
     ```bash
-    svn commit -m "Added simple Flask app with unit test."
+    svn commit -m "Added simple Flask app with unit test." --non-interactive --username 'svnuser' --password 'Change.Me.123'
     ```
 
 -----
