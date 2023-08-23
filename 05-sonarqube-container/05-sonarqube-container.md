@@ -30,14 +30,14 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 1. Open a Terminal, if one is not already open.
 
-2. SonarQube uses the Elasticsearch search engine, and Elasticsearch uses a `mmapfs` directory to store its indices. On most systems, the default mmap count limit is 65530, which is too low for Elasticsearch, resulting in out-of-memory exceptions. In order for SonarQube to work, [you must set the `vm.max_map_count` on the container's host to a minimum value of 262144](https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html):
+2. SonarQube uses the Elasticsearch search engine, and Elasticsearch uses a `mmapfs` directory to store its indices. On most systems, the default mmap count limit is 65530, which is too low for Elasticsearch, resulting in out-of-memory exceptions. In order for SonarQube to work, [you must set the `vm.max_map_count` on the ***container's host*** to a minimum value of 262144](https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html):
 
     ```bash
     sudo dnf -y install procps-ng
     sudo sysctl -w vm.max_map_count=262144
     ```
 
-    > **NOTE** - You could run this command in the container itself, but it would return to the default value each time the container was restarted.
+    > **NOTE** - You could run this command in the container itself, but it would return to the default value, set in the container's host, each time the container was restarted.
 
 3. Create a service file:
 
@@ -234,7 +234,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     > **NOTE** - If you run into any issues, you can always access the container using one of the following commands:
 
     ```bash
-    sudo podman exec -it sonarqube_node /usr/bin/bash
+    sudo podman exec -it sonarqube_node /bin/bash
 
     -or-
 
@@ -346,25 +346,67 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 21. For **Name**, enter ***"DemoRepoSonarQubeScanner"***. Leave the default **Install from Maven Central** option as-is, but record the version number (i.e., SonarQube Scanner 5.0.1.3006); you will need it later. Click **Save** when done.
 
-22. Open your Jenkinsfile. Add the following stage after the **test stage**, using the code snippet provided by SonarQube earlier, along with your Subversion credentials:
+22. Open your Jenkinsfile. Add ***"SonarQube Analysis"*** stage after the test stage, using the code snippet provided by SonarQube earlier, along with your Subversion credentials:
+
+    > **NOTE** - Ensure you use the SHA256 hash your development machine created for data.csv, if it is different from the value in the test stage.
 
     ```groovy
-    stage('SonarQube Analysis') {
-        environment {
-            SCANNER_HOME = tool 'DemoRepoSonarQubeScanner'
-            PROJECT_NAME = "pipeline-demo"
+    pipeline {
+        agent {
+            any {
+                image 'python:3'
+            }
         }
-        steps {
-            withSonarQubeEnv('DemoRepoSonarQubeServer') {
-                sh '''$SCANNER_HOME/bin/sonar-scanner \
-                -Dsonar.projectKey=pipeline-demo \
-                -Dsonar.sources=. \
-                -Dsonar.exclusions=test-reports/**/*.* \
-                -Dsonar.host.url=http://192.168.168.30:9000 \
-                -Dsonar.token=sqp_4e4787c0fb81f468aa798896c332c7db2a71004b \
-                -Dsonar.scm.provider=svn \
-                -Dsonar.svn.username=svnuser \
-                -Dsonar.svn.password.secured=Change.Me.123'''
+        stages {
+            stage('build') {
+                steps {
+                    echo "Building ${env.JOB_NAME}..."
+                    sh 'python3 -m pip install --user Flask'
+                    sh 'python3 -m pip install --user xmlrunner'
+                    sh 'cat /etc/os-release'
+                }
+            }
+            stage('test') {
+                steps {
+                    echo "Testing ${env.JOB_NAME}..."
+                    // Ensure the data.csv file is not corrupted
+                    sh 'echo "c510534c3a1c3a6f015bcfdd0da8b29eb1fecde01d4ce43435a59d14d25e3980  data.csv" | sha256sum -c'
+                    // Unit test app.py
+                    sh 'python3 test_app.py'
+                }
+                post {
+                    always {
+                        junit 'test-reports/*.xml'
+                    }
+                }
+            }
+            stage('SonarQube Analysis') {
+                environment {
+                    SCANNER_HOME = tool 'DemoRepoSonarQubeScanner'
+                    PROJECT_NAME = "pipeline-demo"
+                }
+                steps {
+                    // Exclude the test-reports directory
+                    withSonarQubeEnv('DemoRepoSonarQubeServer') {
+                        sh '''$SCANNER_HOME/bin/sonar-scanner \
+                        -Dsonar.projectKey=pipeline-demo \
+                        -Dsonar.sources=. \
+                        -Dsonar.exclusions=test-reports/**/*.* \
+                        -Dsonar.host.url=http://192.168.168.30:9000 \
+                        -Dsonar.token=sqp_4e4787c0fb81f468aa798896c332c7db2a71004b \
+                        -Dsonar.scm.provider=svn \
+                        -Dsonar.svn.username=svnuser \
+                        -Dsonar.svn.password.secured=Change.Me.123'''
+                    }
+                }
+            }
+        }
+        post {
+            success {
+                echo "Good to go!"
+            }
+            failure {
+                echo "Houston, we've had a problem."
             }
         }
     }

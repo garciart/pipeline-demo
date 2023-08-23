@@ -1,6 +1,6 @@
 # Subversion Container Demo
 
-In this tutorial, you will run Apache Subversion, known as SVN, in a container, to act as a software versioning and revision control server. You will also create a *volume* to store repository data; if the container fails, your repository will not be not lost.
+In this tutorial, you will run Apache Subversion, known as SVN, in a container, to act as a software versioning and revision control server. You will also create a **volume** to store repository data; if the container fails, your repository will not be not lost.
 
 - [Getting Started](#getting-started)
 - [Create and Add the Subversion Server Container to the Network](#create-and-add-the-subversion-server-container-to-the-network)
@@ -263,7 +263,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     > **NOTE** - If you run into any issues, you can always access the container using one of the following commands:
 
     ```bash
-    sudo podman exec -it svn_node /usr/bin/bash
+    sudo podman exec -it svn_node /bin/bash
 
     -or-
 

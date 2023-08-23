@@ -7,6 +7,7 @@ pipeline {
     stages {
         stage('build') {
             steps {
+                echo "Building ${env.JOB_NAME}..."
                 sh 'python3 -m pip install --user Flask'
                 sh 'python3 -m pip install --user xmlrunner'
                 sh 'cat /etc/os-release'
@@ -14,8 +15,9 @@ pipeline {
         }
         stage('test') {
             steps {
+                echo "Testing ${env.JOB_NAME}..."
                 // Ensure the data.csv file is not corrupted
-                sh 'echo "bc1932ebf66ff108fb5ff0a6769f2023a9002c7dafee53d85f14c63cab428b4a  data.csv" | sha256sum -c'
+                sh 'echo "c510534c3a1c3a6f015bcfdd0da8b29eb1fecde01d4ce43435a59d14d25e3980  data.csv" | sha256sum -c'
                 // Unit test app.py
                 sh 'python3 test_app.py'
             }
@@ -25,19 +27,23 @@ pipeline {
                 }
             }
         }
-        stage('SonarQube analysis') {
+        stage('SonarQube Analysis') {
             environment {
-                SCANNER_HOME = tool 'MySonarQubeScanner'
-                PROJECT_NAME = "Pipeline-Demo"
+                SCANNER_HOME = tool 'DemoRepoSonarQubeScanner'
+                PROJECT_NAME = "pipeline-demo"
             }
             steps {
-                withSonarQubeEnv('MySonarQubeServer') { // If you have configured more than one global server connection, you can specify its name
+                // Exclude the test-reports directory
+                withSonarQubeEnv('DemoRepoSonarQubeServer') {
                     sh '''$SCANNER_HOME/bin/sonar-scanner \
-                    -Dsonar.projectKey=Pipeline-Demo \
+                    -Dsonar.projectKey=pipeline-demo \
                     -Dsonar.sources=. \
+                    -Dsonar.exclusions=test-reports/**/*.* \
+                    -Dsonar.host.url=http://192.168.168.30:9000 \
+                    -Dsonar.token=sqp_4e4787c0fb81f468aa798896c332c7db2a71004b \
+                    -Dsonar.scm.provider=svn \
                     -Dsonar.svn.username=svnuser \
-                    -Dsonar.svn.password.secured=Change.Me.123 \
-                    -Dsonar.host.url=http://192.168.168.30:9000'''
+                    -Dsonar.svn.password.secured=Change.Me.123'''
                 }
             }
         }

@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 # My prep work
 sudo dnf -y update
 sudo dnf -y upgrade
@@ -116,7 +116,7 @@ ssh-keygen -R 192.168.168.101
 ssh-keygen -R 192.168.168.102
 
 # # Ping container 2 from container 1
-# sudo podman exec -it managed_node1 /usr/bin/bash
+# sudo podman exec -it managed_node1 /bin/bash
 # ping -c 2 192.168.168.102
 # exit
 

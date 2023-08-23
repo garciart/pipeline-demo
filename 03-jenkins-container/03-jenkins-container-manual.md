@@ -166,7 +166,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     > **NOTE** - If you run into any issues, you can always access the container using one of the following commands:
 
     ```bash
-    sudo podman exec -it jenkins_node /usr/bin/bash
+    sudo podman exec -it jenkins_node /bin/bash
 
     -or-
 
@@ -244,17 +244,17 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     ![Jenkins Dashboard](11-jenkins-dashboard.png "Jenkins Dashboard")
 
-12. By default, Jenkins uses the Git version control system. To use Subversion with Jenkins, you must install the Subversion plugin. Click on **Manage Jenkins** or navigate to `http://192.168.168.20:80808/manage`. The Manage Jenkins page should appear:
+12. By default, Jenkins uses the Git version control system. To use Subversion with Jenkins, you must install the Subversion plugin. Click on **Manage Jenkins** or navigate to `http://192.168.168.20:8080/manage`. The Manage Jenkins page should appear:
 
     > **NOTE** - Ignore any errors or issues for now. Restarting Jenkins should fix these issues, which you will do shortly.
 
     ![Jenkins Manage Page](12-jenkins-manage-page.png "Jenkins Manage Page")
 
-13. Click on **Plugins** or navigate to `http://192.168.168.20:80808/manage/pluginManager`. The Plugins page should appear:
+13. Click on **Plugins** or navigate to `http://192.168.168.20:8080/manage/pluginManager`. The Plugins page should appear:
 
     ![Jenkins Plugins Page](13-jenkins-plugins-page.png "Jenkins Plugins Page")
 
-14. Click on **Available Plugins** or navigate to <http://192.168.168.20:80808/manage/pluginManager/available>. A list of available plugins should appear. Enter ***"subversion"*** in the search box; the **Subversion** plugin should appear at the top of the list. Check the **Install** box next to the plugin:
+14. Click on **Available Plugins** or navigate to <http://192.168.168.20:8080/manage/pluginManager/available>. A list of available plugins should appear. Enter ***"subversion"*** in the search box; the **Subversion** plugin should appear at the top of the list. Check the **Install** box next to the plugin:
 
     ![Jenkins SVN Plugin Search Results](14-jenkins-svn-plugin-search-results.png "Jenkins SVN Plugin Search Results")
 

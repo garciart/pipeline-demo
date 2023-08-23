@@ -74,6 +74,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     email-ext
     mailer
     subversion
+    junit
     ```
 
 6. Create a containerfile:

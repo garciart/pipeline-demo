@@ -4,8 +4,8 @@ After=syslog.target network.target
 
 [Service]
 Type=simple
-User=sonarqube
-Group=sonarqube
+User=sonaruser
+Group=sonaruser
 PermissionsStartOnly=true
 ExecStart=/bin/nohup /usr/bin/java -Xms32m -Xmx32m -Djava.net.preferIPv4Stack=true -jar /opt/sonarqube/lib/sonar-application-10.0.0.68432.jar
 StandardOutput=syslog

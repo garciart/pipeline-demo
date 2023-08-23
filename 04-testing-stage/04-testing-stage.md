@@ -108,7 +108,7 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
     c510534c3a1c3a6f015bcfdd0da8b29eb1fecde01d4ce43435a59d14d25e3980  data.csv
     ```
 
-    > **NOTE** - Depending on your default encoding; or if you added a carriage return to the end of the file, your result may be different (e.g, `bc1932ebf66ff108fb5ff0a6769f2023a9002c7dafee53d85f14c63cab428b4a`, `b055021f394e6e841bf004a3e1a3f65d1521b861f275c9e5b06ace04dd1e6a8e`, etc.). Use the hash produced on your development machine.
+    > **NOTE** - Due to small differences, such as default encoding or a carriage return to the end of the file, your result may be different (e.g, `bc1932ebf66ff108fb5ff0a6769f2023a9002c7dafee53d85f14c63cab428b4a`, `b055021f394e6e841bf004a3e1a3f65d1521b861f275c9e5b06ace04dd1e6a8e`, etc.). Use the hash produced by your development machine.
 
 4. Create a simple Flask application to read the data:
 
@@ -210,21 +210,23 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
 
     ```python
     import unittest
+    
     import xmlrunner
+    
     from app import app
-
-
+    
+    
     class TestSayHello(unittest.TestCase):
         def setUp(self):
             app.testing = True
             self.app = app.test_client()
-
+    
         def test_say_hello(self):
             rv = self.app.get('/')
             self.assertEqual(rv.status, '200 OK')
             self.assertEqual(rv.data, b'<h1>Hello, World!</h1>')
-
-
+    
+    
     if __name__ == '__main__':
         runner = xmlrunner.XMLTestRunner(output='test-reports')
         unittest.main(testRunner=runner)
