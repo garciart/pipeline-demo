@@ -190,7 +190,6 @@ sudo podman volume inspect svn-root
 touch svn.containerfile
 cat <<"EOF" > svn.containerfile
 # Pull a Docker or Podman image. For this demo, you will use AlmaLinux 8
-# Pull a Docker or Podman image. For this demo, you will use AlmaLinux 8
 FROM almalinux:8
 
 # Ensure system is up-to-date
@@ -209,14 +208,15 @@ RUN useradd -c "Default User Account" -m -G wheel user &&\
     echo Change.Me.321 | passwd root --stdin
 
 # Adapted from https://access.redhat.com/solutions/7015042
-# Install openssh, httpd, and sudo
+# Install openssh and sudo
 RUN yum -y install openssh openssh-askpass openssh-clients openssh-server &&\
-    yum -y install httpd &&\
     yum -y install sudo
+# Install httpd
+RUN yum -y install httpd
 
 # Enable the HTTP and SSH daemons
-RUN systemctl enable httpd &&\
-    systemctl enable sshd
+RUN systemctl enable httpd
+RUN systemctl enable sshd
 
 # Customize the SSH daemon
 RUN mkdir --parents /var/run/sshd &&\
@@ -356,14 +356,12 @@ RUN useradd -c "Default User Account" -m -G wheel user &&\
     echo Change.Me.321 | passwd root --stdin
 
 # Adapted from https://access.redhat.com/solutions/7015042
-# Install openssh, httpd, and sudo
+# Install openssh and sudo
 RUN yum -y install openssh openssh-askpass openssh-clients openssh-server &&\
-    yum -y install httpd &&\
     yum -y install sudo
 
-# Enable the HTTP and SSH daemons
-RUN systemctl enable httpd &&\
-    systemctl enable sshd
+# Enable the daemons
+RUN systemctl enable sshd
 
 # Customize the SSH daemon
 RUN mkdir --parents /var/run/sshd &&\
@@ -482,7 +480,7 @@ cd ..
 # Part 4: Jenkins testing Stage
 python3 -m pip install --upgrade --user Flask
 python3 -m pip install --user xmlrunner
-cd ../demorepo || return
+cd demorepo || return
 svn update --non-interactive --username 'svnuser' --password 'Change.Me.123'
 
 touch data.csv
@@ -612,9 +610,9 @@ svn commit -m "Added simple Flask app with unit test." --non-interactive --usern
 firefox http://127.0.0.1:5000/data
 # Refresh browser after the following command
 flask --app app run
-
 cd ..
 
+# Part 5: SonarQube Analysis Stage
 sudo dnf -y install procps-ng
 sudo echo "vm.max_map_count=262144" /etc/sysctl.d/99-sysctl.conf
 sudo sysctl -w vm.max_map_count=262144
@@ -662,14 +660,12 @@ RUN useradd -c "Default User Account" -m -G wheel user &&\
     echo Change.Me.321 | passwd root --stdin
 
 # Adapted from https://access.redhat.com/solutions/7015042
-# Install openssh, httpd, and sudo
+# Install openssh and sudo
 RUN yum -y install openssh openssh-askpass openssh-clients openssh-server &&\
-    yum -y install httpd &&\
     yum -y install sudo
 
-# Enable the HTTP and SSH daemons
-RUN systemctl enable httpd &&\
-    systemctl enable sshd
+# Enable the daemons
+RUN systemctl enable sshd
 
 # Customize the SSH daemon
 RUN mkdir --parents /var/run/sshd &&\
@@ -750,13 +746,13 @@ sudo podman ps --all
 sudo podman inspect sonarqube_node -f '{{ .NetworkSettings.Networks.devnet.IPAddress }}'
 firefox 192.168.168.30:9000
 
-# pipeline-demo token: sqp_8c8c9f4c10eead15e1f62416d28cbc767d9108e2
+# pipeline-demo token: sqp_121ee94c046cf27b3ae49deb5b22ac38632ecc5b
 
 # sonar-scanner \
 #   -Dsonar.projectKey=pipeline-demo \
 #   -Dsonar.sources=. \
 #   -Dsonar.host.url=http://192.168.168.30:9000 \
-#   -Dsonar.token=sqp_8c8c9f4c10eead15e1f62416d28cbc767d9108e2
+#   -Dsonar.token=sqp_121ee94c046cf27b3ae49deb5b22ac38632ecc5b
 
 cd demorepo
 cat <<"EOF" > Jenkinsfile
@@ -802,7 +798,7 @@ pipeline {
                     -Dsonar.sources=. \
                     -Dsonar.exclusions=test-reports/**/*.* \
                     -Dsonar.host.url=http://192.168.168.30:9000 \
-                    -Dsonar.token=sqp_8c8c9f4c10eead15e1f62416d28cbc767d9108e2 \
+                    -Dsonar.token=sqp_121ee94c046cf27b3ae49deb5b22ac38632ecc5b \
                     -Dsonar.scm.provider=svn \
                     -Dsonar.svn.username=svnuser \
                     -Dsonar.svn.password.secured=Change.Me.123'''
@@ -822,6 +818,7 @@ pipeline {
 EOF
 svn add Jenkinsfile --force
 svn commit -m "Added SonarQube analysis stage." --non-interactive --username 'svnuser' --password 'Change.Me.123'
+cd ..
 
 # Notes:
 # To reset the build numbers in Jenkins:

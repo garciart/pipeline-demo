@@ -43,14 +43,12 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
         echo Change.Me.321 | passwd root --stdin
 
     # Adapted from https://access.redhat.com/solutions/7015042
-    # Install openssh, httpd, and sudo
+    # Install openssh and sudo
     RUN yum -y install openssh openssh-askpass openssh-clients openssh-server &&\
-        yum -y install httpd &&\
         yum -y install sudo
-
-    # Enable the HTTP and SSH daemons
-    RUN systemctl enable httpd &&\
-        systemctl enable sshd
+    
+    # Enable the daemons
+    RUN systemctl enable sshd
 
     # Customize the SSH daemon
     RUN mkdir --parents /var/run/sshd &&\
@@ -93,8 +91,8 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     # Install Python for Flask demo
     RUN yum -y install python39
 
-    # Allow traffic through ports 22 (SSH), 80 (HTTP), and 8080 (Jenkins)
-    EXPOSE 22 80 8080
+    # Allow traffic through ports 22 (SSH) and 8080 (Jenkins)
+    EXPOSE 22 8080
 
     # Ensure the system is still up-to-date
     RUN yum -y update
