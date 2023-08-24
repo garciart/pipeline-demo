@@ -415,14 +415,14 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     }
     ```
 
-23. Push your changes to the remote repository. When prompted for the repository password, enter ***"Change.Me.123"***:
+23. Push your changes to the remote repository. If prompted for the repository password, enter ***"Change.Me.123"***:
 
     ```bash
     svn add Jenkinsfile --force
     svn commit -m "Added SonarQube analysis stage." --non-interactive --username 'svnuser' --password 'Change.Me.123'
     ```
 
-24. Go back to Jenkins, wait two minutes for Jenkins to contact the SVN server, then refresh the page. Another build should appear under **Build History**, along with the **Stage View**:
+24. Go back to Jenkins, wait two minutes for Jenkins to contact the SVN server, then refresh the page. Another build should appear under **Build History**, along with the **Stage View**.
 
     > **NOTE** - If refresh does not work, click on **Build Now**.
 
@@ -436,7 +436,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 27. If you click on the link (or open it in a new tab), the results of your scan will appear:
 
-    ![SonarQube Results 1](55-sonarQube-results-1.png "SonarQube Results 1")
+    ![SonarQube Results 1](55-sonarqube-results-1.png "SonarQube Results 1")
 
 -----
 
