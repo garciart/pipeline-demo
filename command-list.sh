@@ -25,7 +25,7 @@ sudo systemctl enable --now cockpit.socket
 sudo firewall-cmd --add-service=cockpit --permanent
 sudo firewall-cmd --reload
 mkdir Workspace
-cd Workspace/ || exit
+cd Workspace/ || return
 git clone https://github.com/garciart/pipeline-demo.git
 sudo shutdown -r now
 
@@ -325,7 +325,7 @@ svn checkout http://192.168.168.10/svn/demorepo/ --non-interactive --username 's
 # Part 2c: Configure and update the repository
 sed -i --regexp-extended 's/^.{0,2}store-plaintext-passwords = no/store-plaintext-passwords = no/g' ~/.subversion/servers
 sed -i -E 's/^.{0,2}store-passwords = no/store-passwords = no/g' ~/.subversion/servers
-cd demorepo || exit
+cd demorepo || return
 pwd
 svn update --non-interactive --username 'svnuser' --password 'Change.Me.123'
 # Part 2d: Push to the repository
@@ -337,8 +337,7 @@ svn commit -m "Initial commit." --non-interactive --username 'svnuser' --passwor
 sudo svnlook info /var/lib/containers/storage/volumes/svn-root/_data/demorepo
 sudo svnlook tree /var/lib/containers/storage/volumes/svn-root/_data/demorepo
 firefox 192.168.168.10/svn/demorepo
-deactivate
-cd .. || exit
+cd .. || return
 
 # Part 3: Create the Jenkins container
 touch jenkins-manual.containerfile
@@ -443,7 +442,7 @@ sudo podman exec jenkins_node cat /var/lib/jenkins/secrets/initialAdminPassword
 # logout
 
 # ----------
-cd demorepo || exit
+cd demorepo || return
 svn update --non-interactive --username 'svnuser' --password 'Change.Me.123'
 
 touch Jenkinsfile
@@ -482,6 +481,7 @@ svn add . --force
 svn commit -m "Added Jenkinsfile." --non-interactive --username 'svnuser' --password 'Change.Me.123'
 cd ..
 
+# ----------
 # Part 4: Jenkins testing Stage
 cd demorepo || return
 python3 -m pip install virtualenv
@@ -590,8 +590,7 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                sh 'python3 -m pip install --user Flask'
-                sh 'python3 -m pip install --user xmlrunner'
+                sh 'python3 -m pip install -r requirements.txt'
                 sh 'cat /etc/os-release'
             }
         }
@@ -765,16 +764,16 @@ sudo podman ps --all
 sudo podman inspect sonarqube_node -f '{{ .NetworkSettings.Networks.devnet.IPAddress }}'
 firefox 192.168.168.30:9000
 
-# pipeline-demo token: sqp_121ee94c046cf27b3ae49deb5b22ac38632ecc5b
+# pipeline-demo token: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 # sonar-scanner \
 #   -Dsonar.projectKey=pipeline-demo \
 #   -Dsonar.sources=. \
 #   -Dsonar.host.url=http://192.168.168.30:9000 \
-#   -Dsonar.token=sqp_121ee94c046cf27b3ae49deb5b22ac38632ecc5b
+#   -Dsonar.token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 # ----------
-cd demorepo
+cd demorepo || return
 source bin/activate
 cat <<"EOF" > Jenkinsfile
 pipeline {
@@ -787,8 +786,7 @@ pipeline {
         stage('build') {
             steps {
                 echo "Building ${env.JOB_NAME}..."
-                sh 'python3 -m pip install --user Flask'
-                sh 'python3 -m pip install --user xmlrunner'
+                sh 'python3 -m pip install -r requirements.txt'
                 sh 'cat /etc/os-release'
             }
         }
@@ -819,7 +817,7 @@ pipeline {
                     -Dsonar.sources=. \
                     -Dsonar.exclusions=test-reports/**/*.* \
                     -Dsonar.host.url=http://192.168.168.30:9000 \
-                    -Dsonar.token=sqp_121ee94c046cf27b3ae49deb5b22ac38632ecc5b \
+                    -Dsonar.token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx \
                     -Dsonar.scm.provider=svn \
                     -Dsonar.svn.username=svnuser \
                     -Dsonar.svn.password.secured=Change.Me.123'''
@@ -839,6 +837,7 @@ pipeline {
 EOF
 svn add Jenkinsfile --force
 svn commit -m "Added SonarQube analysis stage." --non-interactive --username 'svnuser' --password 'Change.Me.123'
+deactivate
 cd ..
 
 # Notes:

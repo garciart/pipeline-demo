@@ -363,7 +363,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     > svn update --non-interactive --username 'svnuser' --password 'Change.Me.123'
     > ``` 
 
-7. Navigate to the repository directory and take a look at its contents:
+7. Navigate to your local `demorepo` repository and take a look at its contents:
 
     ```bash
     cd demorepo

@@ -8,8 +8,7 @@ pipeline {
         stage('build') {
             steps {
                 echo "Building ${env.JOB_NAME}..."
-                sh 'python3 -m pip install --user Flask'
-                sh 'python3 -m pip install --user xmlrunner'
+                sh 'python3 -m pip install -r requirements.txt'
                 sh 'cat /etc/os-release'
             }
         }

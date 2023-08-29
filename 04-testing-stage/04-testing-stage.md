@@ -54,7 +54,7 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
     Password for 'svnuser': *************
     ```
 
-5. Navigate to the repository directory:
+5. Navigate to your local `demorepo` repository:
 
     ```bash
     cd demorepo
@@ -75,10 +75,10 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
     > **NOTE** - While there are some exceptions:
     >
     > - A module is a script of Python code that can be imported into another script.
-    > - A package is a collection of related modules, with a root `__init__.py`, which can be imported into a script.
-    > - A library is a collection of related packages, with a root `__init__.py`, which can be imported into a script.
+    > - A package is a collection of related modules that can be imported into a script.
+    > - A library is a collection of related packages that can be imported into a script.
 
-    However, this can cause dependency conflicts when trying to run a Python script on another machine; the host may not have the required modules, or it may have older or newer versions of the modules the script uses. To help solve this problem, Python allows you to create a ***virtual environment***, which is a default Python installation, segregated from the Python installation on your development machine. Any modules installed in the virtual environment are not accessible and cannot be overridden by the default environment, and vice versa.
+    However, this can cause dependency conflicts when trying to run a Python script on another machine; the host may not have the required modules, or it may have older or newer versions of the modules the script uses. To help solve this problem, Python allows you to create a ***virtual environment***, which is a Python installation segregated from the Python installation on your development machine. Any modules installed in the virtual environment are not accessible and cannot be overridden by the default environment, and vice versa.
 
 2. Open a Terminal, if one is not already open.
 
@@ -88,7 +88,7 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
     python3 -m pip install virtualenv
     ```
 
-4. Go to your repository directory and convert it to a virtual environment:
+4. Go to your local `demorepo` repository and convert it to a virtual environment:
 
     ```bash
     virtualenv .
@@ -96,13 +96,11 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
 
 5. Python will create an execution environment, consisting of files and directories that you do not need to commit to your remote repository:
 
-    ```text
-    bin
-    include
-    lib
-    lib64
-    pyvenv.cfg
-    ```
+    - bin/
+    - include/
+    - lib/
+    - lib64/
+    - pyvenv.cfg
 
     To prevent these files from being uploaded to the container, run the following commands:
 
@@ -131,7 +129,7 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
 
 1. Open a Terminal, if one is not already open.
 
-2. Go to your repository directory and activate the virtual environment, if not already activated:
+2. Go to your local `demorepo` repository and activate the virtual environment, if not already activated:
 
     ```bash
     source bin/activate
@@ -335,7 +333,14 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
     > </testsuite>
     >```
 
-18. Using an editor of your choice, open the Jenkinsfile and modify it to match the following code. Remember to replace the hash below with the hash produced by the `sha256sum` command:
+
+18. Save all the dependencies in a requirements file:
+
+    ```bash
+    python3 -m pip freeze > requirements.txt
+    ```
+
+19. Using an editor of your choice, open the Jenkinsfile and modify it to match the following code. Remember to replace the hash below with the hash produced by the `sha256sum` command:
 
     ```groovy
     pipeline {
@@ -348,8 +353,7 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
             stage('build') {
                 steps {
                     echo "Building ${env.JOB_NAME}..."
-                    sh 'python3 -m pip install --user Flask'
-                    sh 'python3 -m pip install --user xmlrunner'
+                    sh 'python3 -m pip install -r requirements.txt'
                     sh 'cat /etc/os-release'
                 }
             }
@@ -377,12 +381,6 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
             }
         }
     }
-    ```
-
-19. Save all the dependencies in a requirements file:
-
-    ```bash
-    python3 -m pip freeze > requirements.txt
     ```
 
 20. Add all the changes to your local repository:

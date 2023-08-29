@@ -349,7 +349,13 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 21. For **Name**, enter ***"DemoRepoSonarQubeScanner"***. Leave the default **Install from Maven Central** option as-is, but record the version number (i.e., SonarQube Scanner 5.0.1.3006); you will need it later. Click **Save** when done.
 
-22. Using an editor of your choice, open the Jenkinsfile in your local `demorepo` repository. Add a ***"SonarQube Analysis"*** stage after the test stage, using the code snippet provided by SonarQube earlier, along with your Subversion credentials:
+22. Go to your local `demorepo` repository and activate the virtual environment:
+
+    ```bash
+    source bin/activate
+    ```
+
+23. Using an editor of your choice, open the Jenkinsfile in your local `demorepo` repository. Add a ***"SonarQube Analysis"*** stage after the test stage, using the code snippet provided by SonarQube earlier, along with your Subversion credentials:
 
     > **NOTE** - Ensure you use the SHA256 hash your development machine created for data.csv, if it is different from the value in the test stage.
 
@@ -364,8 +370,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
             stage('build') {
                 steps {
                     echo "Building ${env.JOB_NAME}..."
-                    sh 'python3 -m pip install --user Flask'
-                    sh 'python3 -m pip install --user xmlrunner'
+                    sh 'python3 -m pip install -r requirements.txt'
                     sh 'cat /etc/os-release'
                 }
             }
@@ -396,7 +401,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
                         -Dsonar.sources=. \
                         -Dsonar.exclusions=test-reports/**/*.* \
                         -Dsonar.host.url=http://192.168.168.30:9000 \
-                        -Dsonar.token=sqp_4e4787c0fb81f468aa798896c332c7db2a71004b \
+                        -Dsonar.token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx \
                         -Dsonar.scm.provider=svn \
                         -Dsonar.svn.username=svnuser \
                         -Dsonar.svn.password.secured=Change.Me.123'''
@@ -415,26 +420,32 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     }
     ```
 
-23. Push your changes to the remote repository. If prompted for the repository password, enter ***"Change.Me.123"***:
+24. Push your changes to the remote repository. If prompted for the repository password, enter ***"Change.Me.123"***:
 
     ```bash
     svn add Jenkinsfile --force
     svn commit -m "Added SonarQube analysis stage." --non-interactive --username 'svnuser' --password 'Change.Me.123'
     ```
 
-24. Go back to Jenkins, wait two minutes for Jenkins to contact the SVN server, then refresh the page. Another build should appear under **Build History**, along with the **Stage View**.
+25. Deactivate your virtual environment:
+
+    ```bash
+    deactivate
+    ```
+
+26. Go back to Jenkins, wait two minutes for Jenkins to contact the SVN server, then refresh the page. Another build should appear under **Build History**, along with the **Stage View**.
 
     > **NOTE** - If refresh does not work, click on **Build Now**.
 
-25. Click on the build (**#4**) under **Build History**. The build page should appear:
+27. Click on the build (**#4**) under **Build History**. The build page should appear:
 
     ![Jenkins Build Page 4](53-jenkins-build-page-4.png "Jenkins Build Page 4")
 
-26. On the **Build** page, click on the **Console Output** link. Look through the output until you come across a line that looks similar to "`INFO: ANALYSIS SUCCESSFUL, you can find the results at: http://192.168.168.30:9000/dashboard?id=pipeline-demo`":
+28. On the **Build** page, click on the **Console Output** link. Look through the output until you come across a line that looks similar to "`INFO: ANALYSIS SUCCESSFUL, you can find the results at: http://192.168.168.30:9000/dashboard?id=pipeline-demo`":
 
     ![Jenkins Console Output 4](54-jenkins-console-output-4.png "Jenkins Console Output 4")
 
-27. If you click on the link (or open it in a new tab), the results of your scan will appear:
+29. If you click on the link (or open it in a new tab), the results of your scan will appear:
 
     ![SonarQube Results 1](55-sonarqube-results-1.png "SonarQube Results 1")
 

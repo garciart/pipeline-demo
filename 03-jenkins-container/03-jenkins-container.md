@@ -150,7 +150,7 @@ Once you have set up Jenkins, return here and continue the tutorial.
     Password for 'svnuser': *************
     ```
 
-11. Navigate to the repository directory:
+11. Navigate to your local `demorepo` repository:
 
     ```bash
     cd demorepo
