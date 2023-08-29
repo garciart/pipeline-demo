@@ -29,11 +29,7 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
 
 ## Checkout the Repository
 
-> **NOTE** - Ensure you have installed the following applications and packages on the development host:
->
-> - Subversion: `sudo yum -y install subversion`
-> - Flask: `python3 -m pip install --user Flask`
-> - xmlrunner: `python3 -m pip install --user xmlrunner`
+> **NOTE** - Ensure you have installed Subversion on the development host: `sudo yum -y install subversion`
 
 1. Open a Terminal, if one is not already open.
 
@@ -72,15 +68,89 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
 
 -----
 
+## Create the Virtual Environment
+
+1. A Python installation is not monolithic; you can add and remove modules, packages, and libraries as needed.
+
+    > **NOTE** - While there are some exceptions:
+    >
+    > - A module is a script of Python code that can be imported into another script.
+    > - A package is a collection of related modules, with a root `__init__.py`, which can be imported into a script.
+    > - A library is a collection of related packages, with a root `__init__.py`, which can be imported into a script.
+
+    However, this can cause dependency conflicts when trying to run a Python script on another machine; the host may not have the required modules, or it may have older or newer versions of the modules the script uses. To help solve this problem, Python allows you to create a ***virtual environment***, which is a default Python installation, segregated from the Python installation on your development machine. Any modules installed in the virtual environment are not accessible and cannot be overridden by the default environment, and vice versa.
+
+2. Open a Terminal, if one is not already open.
+
+3. Install the virtual environment package:
+
+    ```bash
+    python3 -m pip install virtualenv
+    ```
+
+4. Go to your repository directory and convert it to a virtual environment:
+
+    ```bash
+    virtualenv .
+    ```
+
+5. Python will create an execution environment, consisting of files and directories that you do not need to commit to your remote repository:
+
+    ```text
+    bin
+    include
+    lib
+    lib64
+    pyvenv.cfg
+    ```
+
+    To prevent these files from being uploaded to the container, run the following commands:
+
+    ```bash
+    cat <<"EOF" > .svnignore
+    bin
+    include
+    lib
+    lib64
+    pyvenv.cfg
+    EOF
+    svn propset svn:ignore -F .svnignore .
+    ```
+
+    > **NOTE** - If you accidentally commit a file or directory to the repository that you do not want to track, such as `pyvenv.cfg`, you can remove it from version control using the following command: `svn rm --keep-local pyvenv.cfg`
+
+6. Activate the virtual environment:
+
+    ```bash
+    source bin/activate
+    ```
+
+-----
+
 ## Create the Website
 
-1. Create a dummy comma-separated values (CSV) data file:
+1. Open a Terminal, if one is not already open.
+
+2. Go to your repository directory and activate the virtual environment, if not already activated:
+
+    ```bash
+    source bin/activate
+    ```
+
+3. **Flask** is a micro web framework written in Python that does not require extra tools or libraries. **xmlrunner** is a unittest test runner that can save test results to XML files in xUnit format. Install them now in your virtual environment:
+
+    ```bash
+    python3 -m pip install --upgrade Flask
+    python3 -m pip install xmlrunner 
+    ```
+
+4. Create a dummy comma-separated values (CSV) data file:
 
     ```bash
     touch data.csv
     ```
 
-2. Using an editor of your choice, open `data.csv` and add the following data:
+5. Using an editor of your choice, open `data.csv` and add the following data:
 
     ```text
     1,Delaware,1787
@@ -98,7 +168,7 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
     13,Rhode Island,1790
     ```
 
-3. Get the SHA-256 hash of `data.csv`:
+6. Get the SHA-256 hash of `data.csv`:
 
     ```bash
     sha256sum data.csv
@@ -112,13 +182,13 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
 
     > **NOTE** - Due to small differences, such as default encoding or a carriage return to the end of the file, your result may be different (e.g, `bc1932ebf66ff108fb5ff0a6769f2023a9002c7dafee53d85f14c63cab428b4a`, `b055021f394e6e841bf004a3e1a3f65d1521b861f275c9e5b06ace04dd1e6a8e`, etc.). Use the hash produced by your development machine.
 
-4. Create a simple Flask application to read the data:
+7. Create a simple Flask application to read the data:
 
    ```bash
    touch app.py
    ```
 
-5. Using an editor of your choice, open `app.py` and add the following code:
+8. Using an editor of your choice, open `app.py` and add the following code:
 
    ```python
    from flask import Flask, render_template
@@ -143,14 +213,14 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
        app.run()
    ```
 
-6. Create an HTML page to display the data:
+9. Create an HTML page to display the data:
 
    ```bash
    mkdir -p templates
    touch templates/data.html
    ```
 
-7. Using an editor of your choice, open `data.html` and add the following code:
+10. Using an editor of your choice, open `data.html` and add the following code:
 
    ```html
    <table id="first_states">
@@ -170,7 +240,7 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
    </table>
    ```
 
-8. Start the application:
+11. Start the application:
 
    ```bash
    flask --app app run
@@ -186,7 +256,7 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
    Press CTRL+C to quit
    ```
 
-9. Open a browser and navigate to the IPv4 address in the output (you may have to open a new Terminal):
+12. Open a browser and navigate to the IPv4 address in the output (you may have to open a new Terminal):
 
    ```bash
    firefox http://127.0.0.1:5000
@@ -194,19 +264,19 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
 
    ![Testing: App Index Page](32-test-app-index-page.png "Testing: App Index Page")
 
-10. Append "`/data`" to the end of the URL and the list of states should appear:
+13. Append "`/data`" to the end of the URL and the list of states should appear:
 
     ![Testing: App Data Page](33-test-app-data-page.png "Testing: App Data Page")
 
-11. Stop the application in the original Terminal by pressing **[CTRL]** + **[C]**. Close the browser as well.
+14. Stop the application in the original Terminal by pressing **[CTRL]** + **[C]**. Close the browser as well.
 
-12. Create a unit test for your Flask application:
+15. Create a unit test for your Flask application:
 
     ```bash
     touch test_app.py
     ```
 
-13. Using an editor of your choice, open `test_app.py` and add the following code:
+16. Using an editor of your choice, open `test_app.py` and add the following code:
 
     > **NOTE** - Adapted from <http://pkuwwt.github.io/programming/2020-03-16-jenkins-continuous-integration-testing-for-flask/>
 
@@ -234,7 +304,7 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
         unittest.main(testRunner=runner)
     ```
 
-14. Run the test:
+17. Run the test:
 
     ```bash
     python3 test_app.py
@@ -265,7 +335,7 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
     > </testsuite>
     >```
 
-15. Using an editor of your choice, open the Jenkinsfile and modify it to match the following code. Remember to replace the hash below with the hash produced by the `sha256sum` command:
+18. Using an editor of your choice, open the Jenkinsfile and modify it to match the following code. Remember to replace the hash below with the hash produced by the `sha256sum` command:
 
     ```groovy
     pipeline {
@@ -309,16 +379,28 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
     }
     ```
 
-16. Add all the changes to your local repository:
+19. Save all the dependencies in a requirements file:
+
+    ```bash
+    python3 -m pip freeze > requirements.txt
+    ```
+
+20. Add all the changes to your local repository:
 
     ```bash
     svn add . --force
     ```
 
-17. Push your changes to the remote repository. If prompted for the repository password, enter ***"Change.Me.123"***:
+21. Push your changes to the remote repository. If prompted for the repository password, enter ***"Change.Me.123"***:
 
     ```bash
     svn commit -m "Added simple Flask app with unit test." --non-interactive --username 'svnuser' --password 'Change.Me.123'
+    ```
+
+22. Deactivate your virtual environment:
+
+    ```bash
+    deactivate
     ```
 
 -----

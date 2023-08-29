@@ -1,5 +1,7 @@
 #!/bin/bash
-# My prep work
+
+# ----------
+# For me
 sudo dnf -y update
 sudo dnf -y upgrade
 sudo dnf -y clean all
@@ -27,7 +29,7 @@ cd Workspace/ || exit
 git clone https://github.com/garciart/pipeline-demo.git
 sudo shutdown -r now
 
-
+# ----------
 # Part 1: Create the Podman network
 sudo systemctl start podman
 sudo systemctl enable podman
@@ -130,6 +132,7 @@ ssh-keygen -R 192.168.168.102
 # sudo ping -c 2 192.168.168.102
 # logout
 
+# ----------
 firefox 192.168.168.101:80
 touch one.html
 cat <<"EOF" > one.html
@@ -168,7 +171,7 @@ firefox 192.168.168.102:80
 sudo podman stop managed_node1
 sudo podman stop managed_node2
 
-
+# ----------
 # Part 2a: Create the SVN container
 touch subversion.conf
 cat <<"EOF" > subversion.conf
@@ -312,8 +315,10 @@ sudo podman rm svn_node
 sudo podman run -dt --name svn_node --replace --restart=unless-stopped -v svn-root:/var/www/svn -w /var/www/svn --net devnet --ip 192.168.168.10 --cap-add AUDIT_WRITE svn_node_image
 sudo podman ps --all
 sudo podman inspect svn_node -f '{{ .NetworkSettings.Networks.devnet.IPAddress }}'
+# Sign in when prompted
 firefox 192.168.168.10/svn/demorepo
 
+# ----------
 # Part 2b: Checkout the repository
 sudo yum -y install subversion
 svn checkout http://192.168.168.10/svn/demorepo/ --non-interactive --username 'svnuser' --password 'Change.Me.123'
@@ -332,6 +337,7 @@ svn commit -m "Initial commit." --non-interactive --username 'svnuser' --passwor
 sudo svnlook info /var/lib/containers/storage/volumes/svn-root/_data/demorepo
 sudo svnlook tree /var/lib/containers/storage/volumes/svn-root/_data/demorepo
 firefox 192.168.168.10/svn/demorepo
+deactivate
 cd .. || exit
 
 # Part 3: Create the Jenkins container
@@ -436,6 +442,7 @@ sudo podman exec jenkins_node cat /var/lib/jenkins/secrets/initialAdminPassword
 # cat /var/lib/jenkins/secrets/initialAdminPassword
 # logout
 
+# ----------
 cd demorepo || exit
 svn update --non-interactive --username 'svnuser' --password 'Change.Me.123'
 
@@ -473,16 +480,24 @@ pipeline {
 EOF
 svn add . --force
 svn commit -m "Added Jenkinsfile." --non-interactive --username 'svnuser' --password 'Change.Me.123'
-
 cd ..
 
-
 # Part 4: Jenkins testing Stage
-python3 -m pip install --upgrade --user Flask
-python3 -m pip install --user xmlrunner
 cd demorepo || return
+python3 -m pip install virtualenv
+virtualenv .
+cat <<"EOF" > .svnignore
+bin
+include
+lib
+lib64
+pyvenv.cfg
+EOF
+svn propset svn:ignore -F .svnignore .
+source bin/activate
+python3 -m pip install --upgrade Flask
+python3 -m pip install xmlrunner
 svn update --non-interactive --username 'svnuser' --password 'Change.Me.123'
-
 touch data.csv
 cat <<"EOF" > data.csv
 1,Delaware,1787
@@ -604,12 +619,16 @@ pipeline {
     }
 }
 EOF
+python3 -m pip freeze > requirements.txt
 svn add . --force
 svn commit -m "Added simple Flask app with unit test." --non-interactive --username 'svnuser' --password 'Change.Me.123'
 
 firefox http://127.0.0.1:5000/data
 # Refresh browser after the following command
 flask --app app run
+
+# ----------
+deactivate
 cd ..
 
 # Part 5: SonarQube Analysis Stage
@@ -754,7 +773,9 @@ firefox 192.168.168.30:9000
 #   -Dsonar.host.url=http://192.168.168.30:9000 \
 #   -Dsonar.token=sqp_121ee94c046cf27b3ae49deb5b22ac38632ecc5b
 
+# ----------
 cd demorepo
+source bin/activate
 cat <<"EOF" > Jenkinsfile
 pipeline {
     agent {
