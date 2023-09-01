@@ -1,10 +1,9 @@
-# Ansible Container Demo
+# Deployment Stage Demo
 
-In this tutorial, you will ...
+In this tutorial, you will deploy your web application to a managed node after successfully building and testing it using Jenkins.
 
 - [Getting Started](#getting-started)
-- [Create and Add the Ansible Container to the Network](#create-and-add-the-ansible-container-to-the-network)
-- [Access and Setup Ansible](#access-and-setup-ansible)
+- [Deploying the Application to a Container](#deploying-the-application-to-a-container)
 - [Summary](#summary)
 
 > **WARNING** -  This is only a proof-of-concept demo for a single user! Do not use for production.
@@ -17,6 +16,7 @@ In this tutorial, you will ...
 
 2. Ensure that the following containers are running:
 
+    - Managed Node 1: `sudo podman start managed_node1`
     - Subversion: `sudo podman start svn_node`
     - Jenkins: `sudo podman start jenkins_node`
     - SonarQube: `sudo podman start sonarqube_node`
@@ -27,12 +27,10 @@ In this tutorial, you will ...
 
 -----
 
-## Adding a Quality Gate
-
-Security Hotspots are security-sensitive code that requires manual review to assess whether a vulnerability exists.
+## Deploying the Application to a Container
 
 -----
 
 ## Summary
 
-In this tutorial, you ... Remember, this is only a proof-of-concept demo for a single user; you should not use it for production.
+In this tutorial, you deployed your web application to a managed node after successfully building and testing it using Jenkins. Remember, this is only a proof-of-concept demo for a single user; you should not use it for production.

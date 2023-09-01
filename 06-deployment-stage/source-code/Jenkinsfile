@@ -1,0 +1,58 @@
+pipeline {
+    agent {
+        any {
+            image 'python:3'
+        }
+    }
+    stages {
+        stage('build') {
+            steps {
+                echo "Building ${env.JOB_NAME}..."
+                sh 'python3 -m pip install -r requirements.txt'
+                sh 'cat /etc/os-release'
+            }
+        }
+        stage('test') {
+            steps {
+                echo "Testing ${env.JOB_NAME}..."
+                // Ensure the data.csv file is not corrupted
+                sh 'echo "bc1932ebf66ff108fb5ff0a6769f2023a9002c7dafee53d85f14c63cab428b4a  data.csv" | sha256sum -c'
+                // Unit test app.py
+                sh 'python3 test_app.py'
+            }
+            post {
+                always {
+                    junit 'test-reports/*.xml'
+                }
+            }
+        }
+        stage('SonarQube Analysis') {
+            environment {
+                SCANNER_HOME = tool 'DemoRepoSonarQubeScanner'
+                PROJECT_NAME = "pipeline-demo"
+            }
+            steps {
+                // Exclude the test-reports directory
+                withSonarQubeEnv('DemoRepoSonarQubeServer') {
+                    sh '''$SCANNER_HOME/bin/sonar-scanner \
+                    -Dsonar.projectKey=pipeline-demo \
+                    -Dsonar.sources=. \
+                    -Dsonar.exclusions=test-reports/**/*.* \
+                    -Dsonar.host.url=http://192.168.168.30:9000 \
+                    -Dsonar.token=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx \
+                    -Dsonar.scm.provider=svn \
+                    -Dsonar.svn.username=svnuser \
+                    -Dsonar.svn.password.secured=Change.Me.123'''
+                }
+            }
+        }
+    }
+    post {
+        success {
+            echo "Good to go!"
+        }
+        failure {
+            echo "Houston, we've had a problem."
+        }
+    }
+}

@@ -453,4 +453,4 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 ## Summary
 
-In this tutorial, you created a SonarQube container and integrated it into a Jenkins pipeline, allowing you to check code quality each time a change is pushed to the repository. Please continue to our [Quality Gates Demo](/06-quality-gates/06-quality-gates.md). Remember, this is only a proof-of-concept demo for a single user; you should not use it for production.
+In this tutorial, you created a SonarQube container and integrated it into a Jenkins pipeline, allowing you to check code quality each time a change is pushed to the repository. Please continue to our [Deployment Stage Demo](/06-deployment-stage/README.md). Remember, this is only a proof-of-concept demo for a single user; you should not use it for production.
