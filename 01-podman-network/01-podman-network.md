@@ -125,10 +125,11 @@ For this demo, you will create a simple bridge network to allow your containers 
         echo Change.Me.321 | passwd root --stdin
 
     # Adapted from https://access.redhat.com/solutions/7015042
-    # Install openssh, httpd, iputils, and sudo
-    RUN yum -y install openssh openssh-clients openssh-server &&\
-        yum -y install httpd &&\
+    # Install httpd, iputils, openssh, rsync, and sudo
+    RUN yum -y install httpd &&\
         yum -y install iputils &&\
+        yum -y install openssh openssh-clients openssh-server &&\
+        yum -y install rsync &&\
         yum -y install sudo
 
     # Enable the HTTP and SSH daemons
@@ -355,7 +356,7 @@ For this demo, you will create a simple bridge network to allow your containers 
 3. Copy the web page to the first container's Apache document root path; enter ***"Change.Me.123"*** when prompted for a password:
 
     ```bash
-    scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null one.html alice@192.168.168.101:/var/www/html/index.html
+    rsync --perms --chmod=755 --rsh="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" one.html alice@192.168.168.101:/var/www/html/index.html
     ```
 
 4. Get the contents of the first container's default web page again:
