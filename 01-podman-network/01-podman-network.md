@@ -1,6 +1,6 @@
 # Podman Network Demo
 
-In this demo, you will create a simple network of containers. Each container will run two services: HTTP, to deliver web content to clients; and SSH, to allow remote access for administrators using tools like Ansible and PuTTY.
+In this demo, you will create a simple network of containers. Each container will run two services: HTTP, to deliver web content to clients; and SSH, to allow remote access to the container.
 
 - [Environment](#environment)
 - [Start Podman and Create the Network](#start-podman-and-create-the-network)
@@ -361,7 +361,7 @@ For this demo, you will create a simple bridge network to allow your containers 
 4. Get the contents of the first container's default web page again:
 
     ```bash
-    curl -# 192.168.168.101:80 | grep title
+    curl -s 192.168.168.101:80 | grep title
     ```
 
     *(Sample output; your times may differ:)*
