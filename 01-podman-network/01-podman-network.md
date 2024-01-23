@@ -119,8 +119,8 @@ For this demo, you will create a simple bridge network to allow your containers 
     RUN yum -y install passwd
 
     # Create a non-root user and create a root password
-    # useradd --comment "Default User Account" --create-home --groups wheel,apache alice
-    RUN useradd -c "Default User Account" -m -G wheel,apache alice &&\
+    # useradd --comment "Default User Account" --create-home --groups wheel alice
+    RUN useradd -c "Default User Account" -m -G wheel alice &&\
         echo Change.Me.123 | passwd alice --stdin &&\
         echo Change.Me.321 | passwd root --stdin
 
@@ -154,10 +154,12 @@ For this demo, you will create a simple bridge network to allow your containers 
     ENV NOTVISIBLE "in users profile"
     RUN echo "export VISIBLE=now" >> /etc/profile
 
-    # Set ownership of /var/www/html to apache to allow alice access
+    # Set ownership of /var/www/html to apache to give alice access
     # Get the Apache user name in the container using 'apachectl -S' if this does not work
-    RUN chown -R apache:apache /var/www/html &&\
-        chmod -R 775 /var/www/html
+    RUN chown --recursive apache:apache /var/www/html &&\
+        chmod -R 775 /var/www/html &&\
+        usermod --append --groups apache alice
+
 
     # Allow traffic through ports 22 (SSH) and 80 (HTTP)
     EXPOSE 22 80
@@ -359,7 +361,7 @@ For this demo, you will create a simple bridge network to allow your containers 
 4. Get the contents of the first container's default web page again:
 
     ```bash
-    curl 192.168.168.101:80 | grep title
+    curl -# 192.168.168.101:80 | grep title
     ```
 
     *(Sample output; your times may differ:)*
@@ -464,7 +466,6 @@ sudo podman image prune --all --force
 sudo podman network rm --force devnet
 sudo systemctl stop podman
 sudo systemctl disable podman
-rm -f demo.container
 ```
 
 -----
