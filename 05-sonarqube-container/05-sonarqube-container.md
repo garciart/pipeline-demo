@@ -262,15 +262,15 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 3. A web page should appear, asking you to log in:
 
-    ![Log in to SonarQube](37-log-in-into-sonarqube.png "Log in to SonarQube")
+    ![Log in to SonarQube](/05-sonarqube-container/img/37-log-in-into-sonarqube.png "Log in to SonarQube")
 
 4. Enter ***"admin"*** for both the username and the password. A new page will appear, asking you to change your password. Change it to ***"Change.Me.123"*** for now:
 
-    ![Update your password](38-update-your-password.png "Update your password")
+    ![Update your password](/05-sonarqube-container/img/38-update-your-password.png "Update your password")
 
 5. A page will appear, asking you how do you want to create your project:
 
-    ![How do you want to create your project?](39-how-do-you-want-to-create-your-project.png "How do you want to create your project?")
+    ![How do you want to create your project?](/05-sonarqube-container/img/39-how-do-you-want-to-create-your-project.png "How do you want to create your project?")
 
     > **NOTE** - A warning appears at the bottom of the page, stating that, *"The embedded database should be used for evaluation purposes only."* By default, SonarQube uses a built-in H2 database. You can change the database to [a supported database, such as PostgreSQL, MS SQL Server, and Oracle/MySQL](https://docs.sonarsource.com/sonarqube/9.9/setup-and-upgrade/install-the-server/) if you like, but that is beyond the scope of this tutorial. Please note that the Community Edition does not support running SonarQube in a clustered configuration.
 
@@ -280,31 +280,31 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     - **Project key**: pipeline-demo
     - **Main branch name**: main
 
-    ![Create a project](40-create-a-project.png "Create a project")
+    ![Create a project](/05-sonarqube-container/img/40-create-a-project.png "Create a project")
 
 7. A new page should appear, asking how do you want to analyze your repository. Even though you are going to use Jenkins, SonarQube with Jenkins does not support Subversion as a DevOps platform, so click on **Locally**:
 
-    ![How do you want to analyze your repository?](41-how-do-you-want-to-analyze-your-repository.png "How do you want to analyze your repository?")
+    ![How do you want to analyze your repository?](/05-sonarqube-container/img/41-how-do-you-want-to-analyze-your-repository.png "How do you want to analyze your repository?")
 
 8. The **Analyze your project** page should appear:
 
-    ![Analyze your project](42-analyze-your-project.png "Analyze your project")
+    ![Analyze your project](/05-sonarqube-container/img/42-analyze-your-project.png "Analyze your project")
 
 9. Leave the values as-is for now and click on **Generate**. A token should appear; make sure you record it somewhere, since you will need it later. Click on **Continue** when done:
 
-    ![Provide a token](43-provide-a-token.png "Provide a token")
+    ![Provide a token](/05-sonarqube-container/img/43-provide-a-token.png "Provide a token")
 
 10. When the **Run analysis on your project** page appears, click on **Other (for JS, TS, Go, Python, PHP, ...)**
 
-    ![Run analysis on your project](44-run-analysis-on-your-project.png "Run analysis on your project")
+    ![Run analysis on your project](/05-sonarqube-container/img/44-run-analysis-on-your-project.png "Run analysis on your project")
 
 11. When asked for your operating system, select **Linux**:
 
-    ![What is your OS?](45-what-is-your-os.png "What is your OS?")
+    ![What is your OS?](/05-sonarqube-container/img/45-what-is-your-os.png "What is your OS?")
 
 12. A set of instructions will appear, explaining how to leverage SonarScanner to send its results to the SonarQube server. Click **Copy** and record the instructions:
 
-    ![Execute the Scanner](46-execute-the-scanner.png "Execute the Scanner")
+    ![Execute the Scanner](/05-sonarqube-container/img/46-execute-the-scanner.png "Execute the Scanner")
 
 13. The good news is that you installed SonarScanner when you created the Subversion container, using the containerfile. Right now, if your Jenkins container is not open in a browser, open a Terminal (if one is not open), and access your Jenkins container:
 
@@ -314,19 +314,19 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 14. If you are not logged in, log in, entering ***"jenkinsuser"*** for the username and ***"Change.Me.123"*** for the password. Click on **Dashboard** -> **Manage Jenkins** -> **Plugins**. Click on **Available plugins**, and, in the text box, enter ***"sonarqube"***:
 
-    ![Available plugins](47-available-plugins.png "Available plugins")
+    ![Available plugins](/05-sonarqube-container/img/47-available-plugins.png "Available plugins")
 
 15. Select **SonarQube Scanner** and click on **Download now and install after restart**. The **Download progress** page should appear:
 
-    ![Download progress](48-download-progress.png "Download progress")
+    ![Download progress](/05-sonarqube-container/img/48-download-progress.png "Download progress")
 
 16. Check the **Restart Jenkins when installation is complete and no jobs are running** box. When Jenkins restarts, log back in, and click on **Dashboard** -> **Manage Jenkins**:
 
-    ![Manage Jenkins](49-manage-jenkins.png "Manage Jenkins")
+    ![Manage Jenkins](/05-sonarqube-container/img/49-manage-jenkins.png "Manage Jenkins")
 
 17. Click on **System** to open the System page. Scroll down to **SonarQube servers** and click on **Add SonarQube**:
 
-    ![SonarQube servers](50-sonarqube-servers.png "SonarQube servers")
+    ![SonarQube servers](/05-sonarqube-container/img/50-sonarqube-servers.png "SonarQube servers")
 
 18. Enter the following information:
 
@@ -337,7 +337,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
         - When the Jenkins Credentials Provider screen appears, change the kind to **Secret Text**, enter your token in the **Secret** textbox:
         - Enter ***"DemoRepoSonarQubeToken"*** in the **Description** textbox, then click on **Add**
 
-            ![Jenkins Credentials Provider for SonarQube](51-jenkins-credentials-provider-for-sonarqube.png "Jenkins Credentials Provider for SonarQube")
+            ![Jenkins Credentials Provider for SonarQube](/05-sonarqube-container/img/51-jenkins-credentials-provider-for-sonarqube.png "Jenkins Credentials Provider for SonarQube")
 
         - Go back to the **Server authentication token** dropdown list and select the **DemoRepoSonarQubeToken**.
 
@@ -345,7 +345,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 20. Click on **Manage Jenkins**, then click on **Tools**. Scroll down to **SonarQube Scanner** and click on **Add SonarQube Scanner**:
 
-    ![SonarQube Scanner](52-sonarqube-scanner.png "SonarQube scanner")
+    ![SonarQube Scanner](/05-sonarqube-container/img/52-sonarqube-scanner.png "SonarQube scanner")
 
 21. For **Name**, enter ***"DemoRepoSonarQubeScanner"***. Leave the default **Install from Maven Central** option as-is, but record the version number (i.e., SonarQube Scanner 5.0.1.3006); you will need it later. Click **Save** when done.
 
@@ -439,15 +439,15 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 27. Click on the build (**#4**) under **Build History**. The build page should appear:
 
-    ![Jenkins Build Page 4](53-jenkins-build-page-4.png "Jenkins Build Page 4")
+    ![Jenkins Build Page 4](/05-sonarqube-container/img/53-jenkins-build-page-4.png "Jenkins Build Page 4")
 
 28. On the **Build** page, click on the **Console Output** link. Look through the output until you come across a line that looks similar to "`INFO: ANALYSIS SUCCESSFUL, you can find the results at: http://192.168.168.30:9000/dashboard?id=pipeline-demo`":
 
-    ![Jenkins Console Output 4](54-jenkins-console-output-4.png "Jenkins Console Output 4")
+    ![Jenkins Console Output 4](/05-sonarqube-container/img/54-jenkins-console-output-4.png "Jenkins Console Output 4")
 
 29. If you click on the link (or open it in a new tab), the results of your scan will appear:
 
-    ![SonarQube Results 1](55-sonarqube-results-1.png "SonarQube Results 1")
+    ![SonarQube Results 1](/05-sonarqube-container/img/55-sonarqube-results-1.png "SonarQube Results 1")
 
 -----
 

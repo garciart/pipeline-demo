@@ -189,7 +189,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 3. A web page should appear, asking you to unlock Jenkins:
 
-    ![Unlock Jenkins](05-jenkins-unlock.png "Unlock Jenkins")
+    ![Unlock Jenkins](/03-jenkins-container/img/05-jenkins-unlock.png "Unlock Jenkins")
 
 4. In the Terminal, follow the instructions and look at the contents of `/var/lib/jenkins/secrets/initialAdminPassword`:
 
@@ -210,17 +210,17 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 5. Return to Jenkins and enter the password. A web page should appear, asking you to customize Jenkins:
 
-    ![Customize Jenkins](06-jenkins-customize.png "Customize Jenkins")
+    ![Customize Jenkins](/03-jenkins-container/img/06-jenkins-customize.png "Customize Jenkins")
 
 6. Select **Install suggested plugins** for now. Jenkins will begin its setup process:
 
-    ![Jenkins Plugin Setup](07-jenkins-plugin-setup.png "Jenkins Plugin Setup")
+    ![Jenkins Plugin Setup](/03-jenkins-container/img/07-jenkins-plugin-setup.png "Jenkins Plugin Setup")
 
     > **NOTE** - If any plugins fail to install properly, retry. Sometimes, a plugin requires another plugin, causing a race condition, and a retry may fix the problem.
 
 7. A web page should appear, asking you to create the first admin user:
 
-    ![Jenkins First Admin](08-jenkins-first-admin.png "Jenkins First Admin")
+    ![Jenkins First Admin](/03-jenkins-container/img/08-jenkins-first-admin.png "Jenkins First Admin")
 
 8. Enter the following information:
 
@@ -232,48 +232,48 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 9. A web page should appear, asking you to verify the Jenkins URL:
 
-    ![Jenkins Instance Configuration](09-jenkins-instance-configuration.png "Jenkins Instance Configuration")
+    ![Jenkins Instance Configuration](/03-jenkins-container/img/09-jenkins-instance-configuration.png "Jenkins Instance Configuration")
 
 10. Click on **Save and Finish**. A web page should appear, telling you that Jenkins is ready:
 
-    ![Jenkins is Ready](10-jenkins-is-ready.png "Jenkins is Ready")
+    ![Jenkins is Ready](/03-jenkins-container/img/10-jenkins-is-ready.png "Jenkins is Ready")
 
 11. Click on **Start using Jenkins**. The Jenkins Dashboard should appear:
 
-    ![Jenkins Dashboard](11-jenkins-dashboard.png "Jenkins Dashboard")
+    ![Jenkins Dashboard](/03-jenkins-container/img/11-jenkins-dashboard.png "Jenkins Dashboard")
 
 12. By default, Jenkins uses the Git version control system. To use Subversion with Jenkins, you must install the Subversion plugin. Click on **Manage Jenkins** or navigate to `http://192.168.168.20:8080/manage`. The Manage Jenkins page should appear:
 
     > **NOTE** - Ignore any errors or issues for now. Restarting Jenkins should fix these issues, which you will do shortly.
 
-    ![Jenkins Manage Page](12-jenkins-manage-page.png "Jenkins Manage Page")
+    ![Jenkins Manage Page](/03-jenkins-container/img/12-jenkins-manage-page.png "Jenkins Manage Page")
 
 13. Click on **Plugins** or navigate to `http://192.168.168.20:8080/manage/pluginManager`. The Plugins page should appear:
 
-    ![Jenkins Plugins Page](13-jenkins-plugins-page.png "Jenkins Plugins Page")
+    ![Jenkins Plugins Page](/03-jenkins-container/img/13-jenkins-plugins-page.png "Jenkins Plugins Page")
 
 14. Click on **Available Plugins** or navigate to <http://192.168.168.20:8080/manage/pluginManager/available>. A list of available plugins should appear. Enter ***"subversion"*** in the search box; the **Subversion** plugin should appear at the top of the list. Check the **Install** box next to the plugin:
 
-    ![Jenkins SVN Plugin Search Results](14-jenkins-svn-plugin-search-results.png "Jenkins SVN Plugin Search Results")
+    ![Jenkins SVN Plugin Search Results](/03-jenkins-container/img/14-jenkins-svn-plugin-search-results.png "Jenkins SVN Plugin Search Results")
 
 15. Click on **Download now and install after restart**. The Download progress page should appear:
 
-    ![Jenkins Download Progress Page Top](15-jenkins-download-progress-page-top.png "Jenkins Download Progress Page Top")
+    ![Jenkins Download Progress Page Top](/03-jenkins-container/img/15-jenkins-download-progress-page-top.png "Jenkins Download Progress Page Top")
 
 16. Scroll to the bottom of the page:
 
-    ![Jenkins Download Progress Page Bottom](16-jenkins-download-progress-page-bottom.png "Jenkins Download Progress Page Bottom")
+    ![Jenkins Download Progress Page Bottom](/03-jenkins-container/img/16-jenkins-download-progress-page-bottom.png "Jenkins Download Progress Page Bottom")
 
 17. Click on **Restart Jenkins when installation is complete and no jobs are running**. A web page should appear, asking you to please wait while Jenkins restarts:
 
-    ![Jenkins Restart Page](17-jenkins-restart-page.png "Jenkins Restart Page")
+    ![Jenkins Restart Page](/03-jenkins-container/img/17-jenkins-restart-page.png "Jenkins Restart Page")
 
 18. After a few minutes, the Jenkins Login page should appear:
 
-    ![Jenkins Login Page](18-jenkins-login-page.png "Jenkins Login Page")
+    ![Jenkins Login Page](/03-jenkins-container/img/18-jenkins-login-page.png "Jenkins Login Page")
 
 19. Enter ***"jenkinsuser"*** for the username and ***"Change.Me.123"*** for the password, then click on **Sign In**. If the Download progress page reappears, click on **Go back to the top page** to return to the Dashboard:
 
-    ![Jenkins Download Progress Page Blank](19-jenkins-download-progress-page-blank.png "Jenkins Download Progress Page Blank")
+    ![Jenkins Download Progress Page Blank](/03-jenkins-container/img/19-jenkins-download-progress-page-blank.png "Jenkins Download Progress Page Blank")
 
 20. Return to the [main section of this tutorial](/03-jenkins-container/03-jenkins-container.md) to continue.

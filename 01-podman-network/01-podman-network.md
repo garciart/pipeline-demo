@@ -161,7 +161,6 @@ For this demo, you will create a simple bridge network to allow your containers 
         chmod -R 775 /var/www/html &&\
         usermod --append --groups apache alice
 
-
     # Allow traffic through ports 22 (SSH) and 80 (HTTP)
     EXPOSE 22 80
 
@@ -335,6 +334,8 @@ For this demo, you will create a simple bridge network to allow your containers 
     > ```bash
     > firefox 192.168.168.101:80
     > ```
+    >
+    > ![Default Web Page](/01-podman-network/img/01-podman-http-server-test-page-alma.png "Default Web Page")
 
 2. Using an editor of your choice, create a file named `one.html` in your project directory with the following code:
 
@@ -370,6 +371,14 @@ For this demo, you will create a simple bridge network to allow your containers 
     ```text
     <title>I Am One</title>
     ```
+
+    > **NOTE** - If you have a desktop environment like GNOME, you can open the page in a browser instead:
+    >
+    > ```bash
+    > firefox 192.168.168.101:80
+    > ```
+    >
+    > ![Custom Web Page](/01-podman-network/img/01a-podman-custom-webpage.png "Custom Web Page")
 
 5. Perform the same tasks on the second container, but change `one.html` to `two.html` and replace ***"one"*** with ***"two"*** in the file contents.
 

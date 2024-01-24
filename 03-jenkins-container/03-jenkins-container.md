@@ -46,11 +46,11 @@ Once you have set up Jenkins, return here and continue the tutorial.
 
     > **NOTE** - Ensure the SVN container you created in the [Subversion Container Demo](../02-svn-container/02-svn-container.md) is up and running first.
 
-    ![Jenkins Demo Job](21-jenkins-demo-job.png "Jenkins Demo Job")
+    ![Jenkins Demo Job](/03-jenkins-container/img/21-jenkins-demo-job.png "Jenkins Demo Job")
 
 2. The Configuration page should appear:
 
-    ![Jenkins Job Configuration Page](22-jenkins-job-configuration-page.png "Jenkins Job Configuration Page")
+    ![Jenkins Job Configuration Page](/03-jenkins-container/img/22-jenkins-job-configuration-page.png "Jenkins Job Configuration Page")
 
 3. In the **General** section, enter ***"Pipeline Demo Job"*** in the **Description** textbox.
 
@@ -76,7 +76,7 @@ Once you have set up Jenkins, return here and continue the tutorial.
 
 6. Click on **Save** when finished. The pipeline-demo job page should appear:
 
-    ![Jenkins Pipeline Job Page](23-jenkins-pipeline-job-page.png "Jenkins Pipeline Job Page")
+    ![Jenkins Pipeline Job Page](/03-jenkins-container/img/23-jenkins-pipeline-job-page.png "Jenkins Pipeline Job Page")
 
 7. Wait two minutes, then refresh the page. The initial build should appear under **Build History**, along with the **Stage View**:
 
@@ -84,15 +84,15 @@ Once you have set up Jenkins, return here and continue the tutorial.
 
     > **NOTE** - If refresh does not work, click on **Build Now**.
 
-    ![Jenkins Initial Build](24-jenkins-initial-build.png "Jenkins Initial Build")
+    ![Jenkins Initial Build](/03-jenkins-container/img/24-jenkins-initial-build.png "Jenkins Initial Build")
 
 8. Click on the build (**#1**) under **Build History**. The build page should appear:
 
-    ![Jenkins Build Page 1](25-jenkins-build-page-1.png "Jenkins Build Page 1")
+    ![Jenkins Build Page 1](/03-jenkins-container/img/25-jenkins-build-page-1.png "Jenkins Build Page 1")
 
 9. On the **Build** page, click on the **Console Output** link. Look through the output, and you will see "Hello, World!":
 
-    ![Jenkins Console Output 1](26-jenkins-console-output-1.png "Jenkins Console Output 1")
+    ![Jenkins Console Output 1](/03-jenkins-container/img/26-jenkins-console-output-1.png "Jenkins Console Output 1")
 
 10. Click on the **pipeline-demo** link at the top of the page to return to the project page.
 
@@ -104,7 +104,7 @@ Once you have set up Jenkins, return here and continue the tutorial.
 
 1. If it is not already open, access Jenkins in the browser and open the **pipline-demo** project:
 
-    ![Jenkins Dashboard with Project](27-jenkins-dashboard-with-project.png "Jenkins Dashboard with Project")
+    ![Jenkins Dashboard with Project](/03-jenkins-container/img/27-jenkins-dashboard-with-project.png "Jenkins Dashboard with Project")
 
 2. Click on **Configure**.
 
@@ -117,7 +117,7 @@ Once you have set up Jenkins, return here and continue the tutorial.
         - Click **Add**, then click on the **Jenkins Credentials Provider** button.
         - When the Jenkins Credentials Provider screen appears, enter ***"svnuser"*** for the username and ***"Change.Me.123"*** for the password, then click on **Add**.
 
-            ![Jenkins Credentials Provider](28-jenkins-credentials-provider.png "Jenkins Credentials Provider")
+            ![Jenkins Credentials Provider](/03-jenkins-container/img/28-jenkins-credentials-provider.png "Jenkins Credentials Provider")
 
         - Go back to the **Credentials** dropdown list and select the **svnuser**.
 
@@ -125,7 +125,7 @@ Once you have set up Jenkins, return here and continue the tutorial.
 
 6. Click on **Save** when finished. The pipeline-demo job page should reappear:
 
-    ![Jenkins Pipeline Job Page](24-jenkins-initial-build.png "Jenkins Pipeline Job Page")
+    ![Jenkins Pipeline Job Page](/03-jenkins-container/img/24-jenkins-initial-build.png "Jenkins Pipeline Job Page")
 
 7. Open a Terminal, if one is not already open.
 
@@ -218,7 +218,7 @@ Once you have set up Jenkins, return here and continue the tutorial.
 
     > **NOTE** - If refresh does not work, click on **Build Now**.
 
-    ![Jenkins Jenkinsfile Build](29-jenkins-jenkinsfile-build.png "Jenkins Jenkinsfile Build")
+    ![Jenkins Jenkinsfile Build](/03-jenkins-container/img/29-jenkins-jenkinsfile-build.png "Jenkins Jenkinsfile Build")
 
 18. Now that there is a Jenkinsfile in the repository, Jenkins will run it every time there is a change in the repository. You can use the Jenkinsfile to run tests, scans, and to deploy code to a server.
 
@@ -226,11 +226,11 @@ Once you have set up Jenkins, return here and continue the tutorial.
 
 19. Click on the build (**#2**) under **Build History**. The build page should appear:
 
-    ![Jenkins Build Page 2](30-jenkins-build-page-2.png "Jenkins Build Page 2")
+    ![Jenkins Build Page 2](/03-jenkins-container/img/30-jenkins-build-page-2.png "Jenkins Build Page 2")
 
 20. On the **Build** page, click on the **Console Output** link. Look through the output, and you will see comments for each stage, as well as the success message of "Good to go!":
 
-    ![Jenkins Console Output 2](31-jenkins-console-output-2.png "Jenkins Console Output 2")
+    ![Jenkins Console Output 2](/03-jenkins-container/img/31-jenkins-console-output-2.png "Jenkins Console Output 2")
 
 21. Click on the **pipeline-demo** link at the top of the page to return to the project page.
 
