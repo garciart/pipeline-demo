@@ -335,7 +335,7 @@ For this demo, you will create a simple bridge network to allow your containers 
     > firefox 192.168.168.101:80
     > ```
     >
-    > ![Default Web Page](/01-podman-network/img/01-podman-http-server-test-page-alma.png "Default Web Page")
+    > ![Default Web Page](/01-podman-network/img/01-podman-http-server-test-page-rhel.png "Default Web Page")
 
 2. Using an editor of your choice, create a file named `one.html` in your project directory with the following code:
 
