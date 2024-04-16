@@ -288,13 +288,13 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 3. A popup window should appear, asking you to log in:
 
-    ![SVN Login Dialog](02-svn-login-dialog-box.png "SVN Login Dialog")
+    ![SVN Login Dialog](/02-svn-container/img/02-svn-login-dialog-box.png "SVN Login Dialog")
 
 4. Enter ***"svnuser"*** for the username and ***"Change.Me.123"*** for the password, then click on **Sign In**.
 
 5. The `demorepo` landing page should appear:
 
-    ![SVN demorepo Landing Page](03-svn-demorepo-landing-page.png "SVN demorepo Landing Page")
+    ![SVN demorepo Landing Page](/02-svn-container/img/03-svn-demorepo-landing-page.png "SVN demorepo Landing Page")
 
 -----
 
@@ -361,7 +361,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
     >
     > ```bash
     > svn update --non-interactive --username 'svnuser' --password 'Change.Me.123'
-    > ``` 
+    > ```
 
 7. Navigate to your local `demorepo` repository and take a look at its contents:
 
@@ -438,7 +438,7 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
 9. The `demorepo` landing page should appear, with your changes:
 
-    ![Updated demorepo Landing Page](04-svn-updated-demorepo.png "Updated demorepo Landing Page")
+    ![Updated demorepo Landing Page](/02-svn-container/img/04-svn-updated-demorepo.png "Updated demorepo Landing Page")
 
 10. Return to the Terminal and look at the commit in the volume's mountpoint, using the **svnlook** command:
 

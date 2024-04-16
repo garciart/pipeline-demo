@@ -4,6 +4,7 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
 
 - [Getting Started](#getting-started)
 - [Checkout the Repository](#checkout-the-repository)
+- [Create the Virtual Environment](#create-the-virtual-environment)
 - [Create the Website](#create-the-website)
 - [See the Results in Jenkins](#see-the-results-in-jenkins)
 - [Summary](#summary)
@@ -220,51 +221,51 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
 
 10. Using an editor of your choice, open `data.html` and add the following code:
 
-   ```html
-   <table id="first_states">
-       <caption>First 13 States</caption>
-       <tr>
-           <th>#</th>
-           <th>State</th>
-           <th>Year</th>
-       </tr>
-       {% for row in csv %}
-       <tr>
-           {% for col in row %}
-           <td>{{ col }}</td>
-           {% endfor %}
-       </tr>
-       {% endfor %}
-   </table>
-   ```
+    ```html
+    <table id="first_states">
+        <caption>First 13 States</caption>
+        <tr>
+            <th>#</th>
+            <th>State</th>
+            <th>Year</th>
+        </tr>
+        {% for row in csv %}
+        <tr>
+            {% for col in row %}
+            <td>{{ col }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+    ```
 
 11. Start the application:
 
-   ```bash
-   flask --app app run
-   ```
+    ```bash
+    flask --app app run
+    ```
 
-   **Output:**
+    **Output:**
 
-   ```bash
-    * Serving Flask app 'app'
-    * Debug mode: off
-   WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
-    * Running on http://127.0.0.1:5000
-   Press CTRL+C to quit
-   ```
+    ```bash
+        * Serving Flask app 'app'
+        * Debug mode: off
+    WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+        * Running on http://127.0.0.1:5000
+    Press CTRL+C to quit
+    ```
 
 12. Open a browser and navigate to the IPv4 address in the output (you may have to open a new Terminal):
 
-   ```bash
-   firefox http://127.0.0.1:5000
-   ```
+    ```bash
+    firefox http://127.0.0.1:5000
+    ```
 
-   ![Testing: App Index Page](32-test-app-index-page.png "Testing: App Index Page")
+    ![Testing: App Index Page](/04-testing-stage/img/32-test-app-index-page.png "Testing: App Index Page")
 
 13. Append "`/data`" to the end of the URL and the list of states should appear:
 
-    ![Testing: App Data Page](33-test-app-data-page.png "Testing: App Data Page")
+    ![Testing: App Data Page](/04-testing-stage/img/33-test-app-data-page.png "Testing: App Data Page")
 
 14. Stop the application in the original Terminal by pressing **[CTRL]** + **[C]**. Close the browser as well.
 
@@ -332,7 +333,6 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
     >    <system-err><![CDATA[]]></system-err>
     > </testsuite>
     >```
-
 
 18. Save all the dependencies in a requirements file:
 
@@ -413,17 +413,17 @@ In this tutorial, you will use a Jenkins pipeline to test code and verify a file
 
     > **NOTE** - If refresh does not work, click on **Build Now**.
 
-    ![Jenkins Project Page 3](34-jenkins-project-page-3.png "Jenkins Project Page 3")
+    ![Jenkins Project Page 3](/04-testing-stage/img/34-jenkins-project-page-3.png "Jenkins Project Page 3")
 
 3. Click on the build (**#2**) under **Build History**. The build page should appear:
 
-   ![Jenkins Build Page 3](35-jenkins-build-page-3.png "Jenkins Build Page 2")
+   ![Jenkins Build Page 3](/04-testing-stage/img/35-jenkins-build-page-3.png "Jenkins Build Page 2")
 
     >**NOTE** - A new button, in the shape of a clipboard, will now appear, containing your test results.
 
 4. On the **Build** page, click on the **Console Output** link. Look through the output, and you will see comments for each stage, as well as the success message of "Good to go!":
 
-   ![Jenkins Console Output 3](36-jenkins-console-output-3.png "Jenkins Console Output 2")
+   ![Jenkins Console Output 3](/04-testing-stage/img/36-jenkins-console-output-3.png "Jenkins Console Output 2")
 
 5. Click on the **pipeline-demo** link at the top of the page to return to the project page.
 

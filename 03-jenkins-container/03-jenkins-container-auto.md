@@ -204,10 +204,10 @@ For this tutorial, you will use the freely available AlmaLinux 8 image as the op
 
     > **NOTE** - Unlike the Manual Setup, you will not have to unlock Jenkins, nor perform further initial setup tasks. The `init.groovy` script unlocked Jenkins, set the admin user's password, and installed the desired plugins.
 
-    ![Jenkins Login Page](05a-jenkins-auto-login-page.png "Jenkins Login Page")
+    ![Jenkins Login Page](/03-jenkins-container/img/05a-jenkins-auto-login-page.png "Jenkins Login Page")
 
 4. Enter ***"jenkinsuser"*** for the username and ***"Change.Me.123"*** for the password, then click on **Sign In**. The Jenkins Dashboard should appear:
 
-    ![Jenkins Dashboard](11-jenkins-dashboard.png "Jenkins Dashboard")
+    ![Jenkins Dashboard](/03-jenkins-container/img/11-jenkins-dashboard.png "Jenkins Dashboard")
 
 5. Return to the [main section of this tutorial](/03-jenkins-container/03-jenkins-container.md) to continue.
