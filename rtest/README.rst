@@ -9,6 +9,6 @@ Test
 
 Start the test...
 
-.. include:: NOTES.rst
+.. include:: notes.rst
 
 End of test.
